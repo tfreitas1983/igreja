@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/Nodejs-12.16.1-blue.svg?colorB=90c53f">
   <img src="https://img.shields.io/badge/Express-4.17.1-blue.svg?colorB=47535e">
   <br/>
-  <img src="./construcao.gif">
+  <img src="./underconstruction.gif">
 </p>
 
 Projeto MERN Stack (MongoDB + Express Js + React Js+ Node Js) criando um cadastro de membros de uma igreja: listando, criando, alterando, deletando e também apagando todos os registros.
