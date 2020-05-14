@@ -45,6 +45,7 @@ export default class Membro extends Component {
                 membro_desde_novo: "",
                 cargo: "",
                 selectedCargo: "",
+                foto: "",
                 situacao: false
               },
                 message: "",
@@ -241,6 +242,7 @@ export default class Membro extends Component {
                         cep: response.data.cep,
                         membro_desde: moment(response.data.membro_desde).format('DD/MM/YYYY'),
                         cargo: response.data.cargo,
+                        foto: response.data.foto,
                         situacao: response.data.situacao                     
                     }
                 })
@@ -268,6 +270,7 @@ export default class Membro extends Component {
             cep: this.state.currentMembro.cep,
             membro_desde: moment(this.state.currentMembro.membro_desde, 'DD-MM-YYYY'),
             cargo: this.state.currentMembro.cargo,
+            foto: this.state.currentMembro.foto,
             situacao: status
         }
 
@@ -302,6 +305,7 @@ export default class Membro extends Component {
             cep: this.state.currentMembro.cep,
             membro_desde: moment(this.state.currentMembro.membro_desde, 'DD-MM-YYYY'),
             cargo: this.state.currentMembro.cargo,
+            foto: this.state.currentMembro.foto
         }
 
         MembroDataService.editar( this.state.currentMembro.id, data )
@@ -336,6 +340,29 @@ export default class Membro extends Component {
                 <div className="edit-form">
                     <h4>Membro</h4>
                     <form>
+                        <div className="image-container">
+
+                            <div>
+                                <img 
+                                    src={`/files/${currentMembro.foto}`} 
+                                    className="imagem"
+                                    alt="Busque a foto"
+                                    name="foto" />
+                            </div>
+                            
+                            <div>
+                                <input 
+                                    type="file"  
+                                    className="upload-btn"
+                                    onChange={this.estadoImagem} 
+                                />
+                            </div>
+                            
+                            <button onClick={this.salvarImagem} className="btn btn-success">
+                                Enviar
+                            </button>
+                        </div>
+
                         <div className="form-group">
                             <label htmlFor="nome">Nome</label>
                             <input type="text" className="form-control" id="nome" value={currentMembro.nome} onChange={this.estadoNome} />

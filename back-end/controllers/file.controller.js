@@ -2,14 +2,15 @@ const db = require("../models")
 const Files = db.files
 
 exports.cadastrar = (req, res) => {
-    if (!req.file.nome) {
+    const { originalname: nome, filename: path } = req.file
+    if (!nome) {
         res.status(400).send({ message: "A imagem deve ser enviada"})
         return
     }
 
-    const file = new File ({
-        nome: req.file.nome,
-        path: req.file.path,
+    const file = new Files ({
+        nome,
+        path,
     })
 
     file
@@ -25,18 +26,18 @@ exports.cadastrar = (req, res) => {
 }
 
 exports.buscar = (req, res) => {
-    const id = req.params.id
-
-    Files.findById(id)
+    const filename = req.body.nome
+   
+    Files.find(filename)
         .then(data => {
             if (!data) 
-                res.status(404).send({ message: "Não foi encontrada a imagem com o id "+ id })
+                res.status(404).send({ message: "Não foi encontrada a imagem com o nome "+ filename })
             else res.send(data)
         })
         .catch(err => {
             res
                 .status(500)
-                .send({ message: "Erro ao buscar a imagem com o id=" +id })
+                .send({ message: "Erro ao buscar a imagem com o nome=" +filename })
         })
 }
 /*

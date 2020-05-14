@@ -1,4 +1,5 @@
 const express = require ('express')
+const path = require ('path')
 const bodyParser = require ('body-parser')
 const cors = require ('cors')
 
@@ -29,6 +30,8 @@ db.mongoose
 app.get("/", (req, res) => {
     res.json({ message: "Hello World"})
 })
+
+app.get("/files", express.static(path.resolve(__dirname, 'tmp', 'uploads')))
 
 require("./routes/membro.routes")(app)
 

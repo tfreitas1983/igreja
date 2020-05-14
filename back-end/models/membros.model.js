@@ -14,8 +14,9 @@ module.exports = mongoose => {
         membro_desde: { type: Date },
         cargo: String,
         situacao: Boolean,
-        avatar_id: {
-            type: mongoose.Schema.Types.ObjectId, ref: 'schemaFiles'
+        foto: {
+            type: String,
+            default: 'default.jpg'
         }
     },
         { timestamps: true }

@@ -1,5 +1,7 @@
 const db = require("../models")
 const Membro = db.membros
+const Files = db.files
+
 
 exports.cadastrar = (req, res) => {
     if (!req.body.nome) {
@@ -22,7 +24,7 @@ exports.cadastrar = (req, res) => {
         membro_desde: req.body.membro_desde,
         cargo:req.body.cargo,
         situacao: req.body.situacao ? req.body.situacao: true,
-        avatar_id: req.body.avatar_id
+        foto: req.file.filename  
     })
 
     membro
@@ -139,3 +141,43 @@ exports.buscarAtivos = (req, res) => {
             })
         })
 }
+
+exports.buscarImagem = (req, res) => {
+    Membro.find({foto: req.params.foto})
+  
+        .then(data => {
+            res.send(data)
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Um erro ocorreu ao buscar os membros com foto"
+            })
+        })
+}
+
+
+exports.cadastrarImagem = (req, res) => {
+    const { originalname: img, filename: path } = req.file
+    if (!img) {
+        res.status(400).send({ message: "A imagem deve ser enviada"})
+        return
+    }
+
+    const file = new Files ({
+        img,
+        path,
+    })
+
+    file
+        .save(file)
+        .then(data => {
+            res.send(data)
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Um erro ocorreu ao criar a imagem"
+            })
+        })
+}
+
+
