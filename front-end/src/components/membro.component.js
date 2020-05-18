@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import MembroDataService from "../services/membro.service"
 import * as moment from 'moment'
 
+
 export default class Membro extends Component {
     constructor(props){ 
         super(props)
@@ -333,6 +334,7 @@ export default class Membro extends Component {
 
     render() {
         const { currentMembro } = this.state
+        const url = '../images'
         
         return (
         <div>
@@ -344,23 +346,28 @@ export default class Membro extends Component {
 
                             <div>
                                 <img 
-                                    src={`/files/${currentMembro.foto}`} 
+                                    src={`${url}/${currentMembro.foto}`} 
                                     className="imagem"
                                     alt="Busque a foto"
-                                    name="foto" />
+                                    name="foto" 
+                                    id="foto"/>
                             </div>
                             
-                            <div>
+                            <div className="envio">
                                 <input 
                                     type="file"  
                                     className="upload-btn"
                                     onChange={this.estadoImagem} 
-                                />
+                                /> 
                             </div>
+
+                            <div className="envio">                          
                             
-                            <button onClick={this.salvarImagem} className="btn btn-success">
-                                Enviar
-                            </button>
+                                <button onClick={this.salvarImagem} className="btn btn-success">
+                                    Enviar
+                                </button>
+
+                            </div>
                         </div>
 
                         <div className="form-group">

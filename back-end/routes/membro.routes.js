@@ -11,13 +11,14 @@ module.exports = app => {
     router.post("/", membros.cadastrar)
     router.get("/", membros.buscarTodos)
     router.get("/situacao", membros.buscarAtivos)
-    router.get("/files/:foto", membros.buscarImagem)
+    //router.get("/files/:foto", express.static(path.resolve(__dirname, 'tmp', 'uploads')))
+    //router.get("/files/:foto", membros.buscarImagem)
     //router.get("/img", files.buscar)
     router.get("/:id", membros.buscarUm)
     router.put("/:id", membros.editar)
     router.delete("/:id", membros.apagar)
     router.delete("/", membros.apagarTodos)
-   // router.post("/files", upload.single('file'), membros.cadastrarImagem)
+    router.post("/files", upload.single('file'), membros.cadastrarImagem)
     
 
     app.use('/api/membros', router)

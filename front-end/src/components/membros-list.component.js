@@ -88,11 +88,13 @@ export default class MembrosLista extends Component {
 
     render() {
         const { buscaNome, membros, currentMembro, currentIndex } = this.state
+        const url = '../images'
 
         return (
             <div className="list row">
 
                 <div className="col-md-8">
+                    
                     <div className="input-group mb-3">
                         <input 
                             type="text" 
@@ -134,6 +136,14 @@ export default class MembrosLista extends Component {
                 <div className="col-md-6">
                     {currentMembro ? (
                         <div>
+                            <img 
+                                src={`${url}/${currentMembro.foto}`} 
+                                className="imagem"
+                                alt=""
+                                name="foto" 
+                                id="foto"
+                            />
+
                             <h4> {currentMembro.nome} </h4>
                             
                             <div>

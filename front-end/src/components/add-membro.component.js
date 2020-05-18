@@ -18,7 +18,9 @@ export default class AdicionarMembro extends Component {
         this.estadoCep = this.estadoCep.bind(this)
         this.estadoMembro_Desde = this.estadoMembro_Desde.bind(this)
         this.estadoCargo = this.estadoCargo.bind(this)
+        this.estadoImagem = this.estadoImagem.bind(this)
 
+        this.salvarImagem = this.salvarImagem.bind(this)
         this.salvarMembro = this.salvarMembro.bind(this)
         this.novoMembro = this.novoMembro.bind(this)
 
@@ -38,12 +40,16 @@ export default class AdicionarMembro extends Component {
             membro_desde: "",
             cargo: "",
             situacao: true,
-            avatar_id: "",
+            foto: "default.jpg",
             submitted: false
         }
     }
 
-
+    estadoImagem(e) {
+        this.setState({
+            foto: e.target.file
+        })
+    }
 
     estadoNome(e) {
         this.setState({
@@ -123,7 +129,23 @@ export default class AdicionarMembro extends Component {
         })
     }
 
-   
+   salvarImagem() {
+    var data = {
+        foto: this.state.foto
+    }
+    
+    MembroDataService.cadastrarImagem(data)
+                .then(response => {
+                    this.setState({
+                        foto: response.data.foto
+                    })
+                    console.log(response.data)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+
+   }
 
     salvarMembro() {
         var data = {
@@ -141,7 +163,7 @@ export default class AdicionarMembro extends Component {
             cep: this.state.cep,
             membro_desde: moment(this.state.membro_desde,'DD/MM/YYYY'),
             cargo: this.state.cargo,
-            avatar_id: this.state.avatar_id
+            foto: this.state.foto
         }
 
             MembroDataService.cadastrar(data)
@@ -161,7 +183,7 @@ export default class AdicionarMembro extends Component {
                         cep: response.data.cep,
                         membro_desde: response.data.membro_desde,
                         cargo: response.data.cargo,
-                        avatar_id: response.data.avatar_id,
+                        foto: response.data.foto,
                         situacao: response.data.situacao,
                         submitted: true
                     })
@@ -189,12 +211,14 @@ export default class AdicionarMembro extends Component {
         membro_desde: "",
         cargo: "",
         situacao: true,
-        avatar_id: "",
+        foto: "",
         submitted: false
         })
     }
 
     render() {
+        const url = '../images'
+
         return (
             <div className="submit-form">
                 { this.state.submitted ? (
@@ -209,6 +233,35 @@ export default class AdicionarMembro extends Component {
                     <div>
 
                         <div className="form-group">
+
+                        <div className="image-container">
+
+                            <div>
+                                <img 
+                                    src={`${url}/${this.state.foto}`} 
+                                    className="imagem"
+                                    alt="Busque a foto"
+                                    name="foto" 
+                                    id="foto"/>
+                            </div>
+
+                            <div className="envio">
+                                <input 
+                                    type="file"  
+                                    className="upload-btn"
+                                    onChange={this.estadoImagem} 
+                                /> 
+                            </div>
+
+                            <div className="envio">                          
+
+                                <button onClick={this.salvarImagem} className="btn btn-success">
+                                    Enviar
+                                </button>
+
+                            </div>
+                        </div>
+                        
                             <label htmlFor="nome"> Nome </label>
                             <input 
                             type="text" 

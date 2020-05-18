@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
     res.json({ message: "Hello World"})
 })
 
-app.get("/files", express.static(path.resolve(__dirname, 'tmp', 'uploads')))
+app.get("/files", express.static(path.resolve('..', 'front-end', 'src', 'images')))
 
 require("./routes/membro.routes")(app)
 

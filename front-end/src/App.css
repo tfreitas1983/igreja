@@ -41,6 +41,15 @@ form{
   margin-top: 80px;
 }
 
+img {
+  border-radius: 50%;
+  height: 100px;
+  margin-bottom: 15px;
+}
+
+.envio {
+  margin-bottom: 15px;
+}
 
 .list {
   text-align: left;
