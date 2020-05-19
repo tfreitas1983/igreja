@@ -4,42 +4,12 @@ const Files = db.files
 
 
 exports.cadastrar = (req, res) => {
-
     if (!req.body.nome) {
         res.status(400).send({ message: "O nome deve ser preenchido"})
         return
     }
 
-    if(req.body.id) {
-       
-        membro = ({
-            nome: req.body.nome,
-            dtnascimento: req.body.dtnascimento,
-            sexo: req.body.sexo,
-            telefone: req.body.telefone,
-            rua: req.body.rua,
-            num:req.body.num,
-            complemento:req.body.complemento,
-            bairro:req.body.bairro,
-            cidade:req.body.cidade,
-            uf:req.body.uf,
-            cep:req.body.cep,
-            membro_desde: req.body.membro_desde,
-            cargo:req.body.cargo,
-            situacao: req.body.situacao ? req.body.situacao: true,
-            foto: req.file.filename  
-        })
-            membro
-                .save(membro)
-                .then(data => {
-                    res.send(data)
-                })
-                .catch(err => {
-                    res.status(500).send({
-                        message: err.message || "Um erro ocorreu ao criar o membro"
-                    })
-                })
-    } const membro = new Membro ({
+    const membro = new Membro ({
         nome: req.body.nome,
         dtnascimento: req.body.dtnascimento,
         sexo: req.body.sexo,
@@ -54,19 +24,19 @@ exports.cadastrar = (req, res) => {
         membro_desde: req.body.membro_desde,
         cargo:req.body.cargo,
         situacao: req.body.situacao ? req.body.situacao: true,
-        foto: req.file.filename  
+        foto: req.body.foto
     })
-        membro
-            .save(membro)
-            .then(data => {
-                res.send(data)
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || "Um erro ocorreu ao criar o membro"
-                })
-            })
 
+    membro
+        .save(membro)
+        .then(data => {
+            res.send(data)
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Um erro ocorreu ao criar o membro"
+            })
+        })
 }
 
 exports.buscarTodos = (req, res) => {
@@ -173,7 +143,7 @@ exports.buscarAtivos = (req, res) => {
 }
 
 exports.buscarImagem = (req, res) => {
-    Membro.find({foto: req.params.foto})
+    Files.find({foto: req.params.foto})
   
         .then(data => {
             res.send(data)
@@ -187,13 +157,14 @@ exports.buscarImagem = (req, res) => {
 
 
 exports.cadastrarImagem = (req, res) => {
-    const { filename: foto } = req.file
+    const { originalname: original, filename: foto } = req.file
     if (!foto) {
         res.status(400).send({ message: "A imagem deve ser enviada"})
         return
     }
 
-    const file = new Membro ({
+    const file = new Files ({
+       original,
        foto
     })
     file    

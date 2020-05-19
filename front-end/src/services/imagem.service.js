@@ -1,8 +1,8 @@
 import http from "../http-common"
 
 class ImagemDataService {
-    cadastrarImagem(data) {
-        return http.post("/membros/files", data)
+    cadastrarImagem(file) {
+        return http.post("/membros/files", file)
     }
 
     buscarImagem(avatar_id) {

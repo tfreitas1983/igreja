@@ -347,8 +347,8 @@ export default class Membro extends Component {
                             <div>
                                 <img 
                                     src={`${url}/${currentMembro.foto}`} 
-                                    className="imagem"
-                                    alt="Busque a foto"
+                                    className="foto"
+                                    alt=""
                                     name="foto" 
                                     id="foto"/>
                             </div>

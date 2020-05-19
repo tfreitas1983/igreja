@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import MembroDataService from "../services/membro.service"
+//import ImagemDataService from "../services/imagem.service"
 import * as moment from 'moment'
 
 export default class AdicionarMembro extends Component {
@@ -19,6 +20,7 @@ export default class AdicionarMembro extends Component {
         this.estadoMembro_Desde = this.estadoMembro_Desde.bind(this)
         this.estadoCargo = this.estadoCargo.bind(this)
         this.estadoImagem = this.estadoImagem.bind(this)
+        this.estadoUpload = this.estadoUpload.bind(this)
 
         this.salvarImagem = this.salvarImagem.bind(this)
         this.salvarMembro = this.salvarMembro.bind(this)
@@ -41,13 +43,26 @@ export default class AdicionarMembro extends Component {
             cargo: "",
             situacao: true,
             foto: "default.jpg",
+            imagem: "",
             submitted: false
         }
     }
 
     estadoImagem(e) {
+       this.setState({
+            foto: e.target.files[0].name
+        }) 
+
+     /*   
+    const data = new FormData()
+    data.append('file', e.target.files[0].name)
+       */ 
+    } 
+
+    estadoUpload(e) {
         this.setState({
-            foto: e.target.file
+            imagem: e.target.files[0]
+            
         })
     }
 
@@ -130,20 +145,26 @@ export default class AdicionarMembro extends Component {
     }
 
    salvarImagem() {
-    var data = {
-        foto: this.state.foto
-    }
-    
-    MembroDataService.cadastrarImagem(data)
-                .then(response => {
-                    this.setState({
-                        foto: response.data.foto
+
+    var data = new FormData()
+    data.append('file', this.state.imagem)
+    /* var data = {
+        upload: this.state.imagem
+    } */
+   
+        MembroDataService.cadastrarImagem(data)
+                    .then(response => {
+                        this.setState({
+                            upload: response.data.upload,
+                            foto: response.data.foto
+                        })
+                        console.log(response.data)
+                       
+                        
                     })
-                    console.log(response.data)
-                })
-                .catch(e => {
-                    console.log(e)
-                })
+                    .catch(e => {
+                        console.log(e)
+                    })
 
    }
 
@@ -241,15 +262,18 @@ export default class AdicionarMembro extends Component {
                                     src={`${url}/${this.state.foto}`} 
                                     className="imagem"
                                     alt="Busque a foto"
-                                    name="foto" 
+                                    name="foto"
                                     id="foto"/>
                             </div>
 
                             <div className="envio">
                                 <input 
-                                    type="file"  
+                                    type="file" 
+                                    accept="image/*" 
                                     className="upload-btn"
-                                    onChange={this.estadoImagem} 
+                                    onChange={this.estadoUpload}
+                                    id="file"
+                                    name="file"
                                 /> 
                             </div>
 
@@ -261,7 +285,7 @@ export default class AdicionarMembro extends Component {
 
                             </div>
                         </div>
-                        
+
                             <label htmlFor="nome"> Nome </label>
                             <input 
                             type="text" 

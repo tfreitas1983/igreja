@@ -2,7 +2,7 @@ const db = require("../models")
 const Files = db.files
 
 exports.cadastrar = (req, res) => {
-    const { originalname: nome, filename: foto } = req.file
+    const { originalname: original, filename: foto } = req.file
     if (!nome) {
         res.status(400).send({ message: "A imagem deve ser enviada"})
         return
