@@ -88,7 +88,14 @@ export default class MembrosLista extends Component {
 
     render() {
         const { buscaNome, membros, currentMembro, currentIndex } = this.state
-        const url = '../images'
+
+        const importAll = require =>
+          require.keys().reduce((acc, next) => {
+            acc[next.replace("./", "")] = require(next);
+            return acc;
+          }, {});
+
+        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
 
         return (
             <div className="list row">
@@ -137,7 +144,7 @@ export default class MembrosLista extends Component {
                     {currentMembro ? (
                         <div>
                             <img 
-                                src={`${url}/${currentMembro.foto}`} 
+                                src={images[currentMembro.foto]}
                                 className="imagem"
                                 alt=""
                                 name="foto" 

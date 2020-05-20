@@ -19,6 +19,9 @@ export default class Membro extends Component {
         this.estadoCep = this.estadoCep.bind(this)
         this.estadoMembro_Desde = this.estadoMembro_Desde.bind(this)
         this.estadoCargo = this.estadoCargo.bind(this)
+        this.estadoImagem = this.estadoImagem.bind(this)
+        this.estadoUpload = this.estadoUpload.bind(this)
+
         this.buscaMembro = this.buscaMembro.bind(this)
         this.atualizaSituacao = this.atualizaSituacao.bind(this)
         this.atualizaMembro = this.atualizaMembro.bind(this)
@@ -47,17 +50,35 @@ export default class Membro extends Component {
                 cargo: "",
                 selectedCargo: "",
                 foto: "",
+                imagem: "",
                 situacao: false
               },
                 message: "",
         }
-      
     }    
 
     componentDidMount() {
         this.buscaMembro(this.props.match.params.id)
     }
 
+
+    estadoImagem(e) {
+        const foto = e.target.value
+        this.setState(function(prevState) {
+            return {
+                currentMembro: {
+                    ...prevState.currentMembro,
+                    foto: foto
+                }
+            }
+        })
+    }
+
+    estadoUpload(e) {
+        this.setState({
+            imagem: e.target.files[0]            
+        })
+    }
             
     estadoNome(e) {
         const nome = e.target.value
@@ -255,6 +276,27 @@ export default class Membro extends Component {
             })    
     }
 
+    salvarImagem() {
+
+        var data = new FormData()
+        data.append('file', this.state.imagem)
+       
+            MembroDataService.cadastrarImagem(data)
+                        .then(response => {
+                            this.setState({
+                                imagem: response.data.imagem,
+                                foto: response.data.foto
+                            })
+                            console.log(response.data)
+                           
+                            
+                        })
+                        .catch(e => {
+                            console.log(e)
+                        })
+    
+       }
+
     atualizaSituacao(status) {
         var data = {
             id: this.state.currentMembro.id,
@@ -332,9 +374,18 @@ export default class Membro extends Component {
             })                    
     }
 
+    
+
     render() {
         const { currentMembro } = this.state
-        const url = '../images'
+
+        const importAll = require =>
+          require.keys().reduce((acc, next) => {
+            acc[next.replace("./", "")] = require(next);
+            return acc;
+          }, {});
+
+        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
         
         return (
         <div>
@@ -346,9 +397,9 @@ export default class Membro extends Component {
 
                             <div>
                                 <img 
-                                    src={`${url}/${currentMembro.foto}`} 
+                                    src={images[currentMembro.foto]} 
                                     className="foto"
-                                    alt=""
+                                    alt="Foto de perfil"
                                     name="foto" 
                                     id="foto"/>
                             </div>

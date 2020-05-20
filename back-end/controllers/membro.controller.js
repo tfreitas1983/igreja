@@ -143,7 +143,8 @@ exports.buscarAtivos = (req, res) => {
 }
 
 exports.buscarImagem = (req, res) => {
-    Files.find({foto: req.params.foto})
+    const filename = req.params.foto
+    Membro.find(filename)
   
         .then(data => {
             res.send(data)

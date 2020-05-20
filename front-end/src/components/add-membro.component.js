@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import MembroDataService from "../services/membro.service"
-//import ImagemDataService from "../services/imagem.service"
 import * as moment from 'moment'
+import url from "../images/default.jpg"
 
 export default class AdicionarMembro extends Component {
     constructor(props) {
@@ -48,21 +48,15 @@ export default class AdicionarMembro extends Component {
         }
     }
 
-    estadoImagem(e) {
+     estadoImagem(e) {
        this.setState({
             foto: e.target.files[0].name
         }) 
-
-     /*   
-    const data = new FormData()
-    data.append('file', e.target.files[0].name)
-       */ 
-    } 
+    }  
 
     estadoUpload(e) {
         this.setState({
-            imagem: e.target.files[0]
-            
+            imagem: e.target.files[0]            
         })
     }
 
@@ -148,14 +142,11 @@ export default class AdicionarMembro extends Component {
 
     var data = new FormData()
     data.append('file', this.state.imagem)
-    /* var data = {
-        upload: this.state.imagem
-    } */
    
         MembroDataService.cadastrarImagem(data)
                     .then(response => {
                         this.setState({
-                            upload: response.data.upload,
+                            imagem: response.data.imagem,
                             foto: response.data.foto
                         })
                         console.log(response.data)
@@ -238,7 +229,7 @@ export default class AdicionarMembro extends Component {
     }
 
     render() {
-        const url = '../images'
+     
 
         return (
             <div className="submit-form">
@@ -259,7 +250,7 @@ export default class AdicionarMembro extends Component {
 
                             <div>
                                 <img 
-                                    src={`${url}/${this.state.foto}`} 
+                                    src={url} 
                                     className="imagem"
                                     alt="Busque a foto"
                                     name="foto"
