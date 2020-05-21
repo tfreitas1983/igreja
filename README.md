@@ -23,8 +23,7 @@ Instale o docker desktop ou docker toolbox se for Windows 7. Baixe a imagem do m
 
 Próximas Etapas:
 
-- Implementar o upload de fotos com preview utilizando multer no back-end e unform no front-end.
-- Upload de fotos com drag n' drop de arquivos (jpg, jpeg, png, gif, tiff) com limite de tamanho
+- Implementar o upload de fotos com preview utilizando multer no back-end (svg, jpg, jpeg, png, gif, tiff) com limite de tamanho
 - Implementar relatório de aniversariantes do mês
 - Salvar relatórios em PDF, CSV
 - Imprimir relatórios

@@ -51,6 +51,7 @@ export default class Membro extends Component {
                 selectedCargo: "",
                 foto: "",
                 imagem: "",
+                url: "",
                 situacao: false
               },
                 message: "",
@@ -64,13 +65,14 @@ export default class Membro extends Component {
     estadoUpload(e) {
         const imagem = e.target.files[0]
         const foto =  e.target.files[0].name
-
+       
         this.setState(prevState => ({
             imagem: imagem,
+            url: URL.createObjectURL(imagem),
             currentMembro: {
                 ...prevState.currentMembro,
                     foto: foto
-                    
+                     
             }
         }))
     }
@@ -317,7 +319,7 @@ export default class Membro extends Component {
                         situacao: status
                     }
                 }))
-                console.log(response.data)
+
             })
             .catch(e => {
                 console.log(e)
@@ -350,7 +352,7 @@ export default class Membro extends Component {
                 this.setState({
                     message: "O membro foi alterado com sucesso"
                 })
-                console.log(response.data)
+
             })
             .catch(e => {
                 console.log(e)
@@ -360,7 +362,7 @@ export default class Membro extends Component {
     apagaMembro() {
         MembroDataService.apagar(this.state.currentMembro.id)
             .then(response => {
-                console.log(response.data)
+
                 this.props.history.push('/membros')
             })
             .catch(e => {
@@ -373,13 +375,25 @@ export default class Membro extends Component {
     render() {
         const { currentMembro } = this.state
 
+
+        //Pega os nomes dos arquivos
         const importAll = require =>
           require.keys().reduce((acc, next) => {
             acc[next.replace("./", "")] = require(next);
             return acc;
           }, {});
-
+        // Constante que pega todas as imagens da pasta images
         const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
+        
+        
+        //Modifica o <img src=""> no JSX caso seja o preview da imagem ou a imagem da pasta
+        let $imagePreview = null;
+        if (this.state.url && currentMembro.foto.length < 30) {
+            $imagePreview = <img alt ="" src={this.state.url} />
+        } if(currentMembro.foto.length > 30) {
+            $imagePreview = <img alt ="" src={images[currentMembro.foto]} />
+        }
+
         
         return (
         <div>
@@ -389,13 +403,8 @@ export default class Membro extends Component {
                     <form>
                         <div className="image-container">
 
-                            <div>
-                                <img 
-                                    src={images[currentMembro.foto]} 
-                                    className="foto"
-                                    alt="Foto de perfil"
-                                    name="foto" 
-                                    id="foto"/>
+                            <div className="envio">
+                                {$imagePreview}
                             </div>
                             
                             <div className="envio">
@@ -406,13 +415,6 @@ export default class Membro extends Component {
                                 /> 
                             </div>
 
-                            <div className="envio">                          
-                            
-                                <button type="button" onClick={this.salvarImagem} className="btn btn-success">
-                                    Enviar
-                                </button>
-
-                            </div>
                         </div>
 
                         <div className="form-group">
@@ -551,7 +553,7 @@ export default class Membro extends Component {
                     Apagar
             </button>
 
-            <button type="submit" className="badge badge-success mr-2" onClick={this.atualizaMembro} >
+            <button type="submit" className="badge badge-success mr-2" onClick={this.salvarImagem} >
                     Alterar
             </button>
             

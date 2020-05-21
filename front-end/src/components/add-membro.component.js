@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import MembroDataService from "../services/membro.service"
 import * as moment from 'moment'
-import url from "../images/default.jpg"
+// import url from "../images/default.jpg"
 
 export default class AdicionarMembro extends Component {
     constructor(props) {
@@ -20,6 +20,7 @@ export default class AdicionarMembro extends Component {
         this.estadoMembro_Desde = this.estadoMembro_Desde.bind(this)
         this.estadoCargo = this.estadoCargo.bind(this)
         this.estadoUpload = this.estadoUpload.bind(this)
+       // this.estadoFoto = this.estadoFoto.bind(this)
 
         this.salvarImagem = this.salvarImagem.bind(this)
         this.salvarMembro = this.salvarMembro.bind(this)
@@ -43,15 +44,19 @@ export default class AdicionarMembro extends Component {
             situacao: true,
             foto: "default.jpg",
             imagem: "",
+            url:"",
             submitted: false
         }
     }
 
     estadoUpload(e) {
+     
+        const imagem = e.target.files[0]
         this.setState({
-            imagem: e.target.files[0]            
+            imagem: imagem,
+            url: URL.createObjectURL(imagem)          
         })
-    }
+  }
 
     estadoNome(e) {
         this.setState({
@@ -131,8 +136,9 @@ export default class AdicionarMembro extends Component {
         })
     }
 
-   salvarImagem() {
-
+   salvarImagem(e) {
+    e.preventDefault()
+    
     var data = new FormData()
     data.append('file', this.state.imagem)
    
@@ -141,6 +147,7 @@ export default class AdicionarMembro extends Component {
                         this.setState({
                             foto: response.data.foto
                         })
+                        this.salvarMembro()
                     })
                     .catch(e => {
                         console.log(e)
@@ -148,6 +155,7 @@ export default class AdicionarMembro extends Component {
    }
 
     salvarMembro() {
+
         var data = {
             
             nome: this.state.nome,
@@ -217,7 +225,24 @@ export default class AdicionarMembro extends Component {
     }
 
     render() {
-     
+
+
+
+        const importAll = require =>
+          require.keys().reduce((acc, next) => {
+            acc[next.replace("./", "")] = require(next);
+            return acc;
+          }, {});
+
+        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
+        
+        let $imagePreview = null;
+        if (this.state.url.length > 50) {
+            $imagePreview = <img alt ="" src={this.state.url} />
+        } else {
+            $imagePreview = <img alt ="" src={images[this.state.foto]} />
+        }
+    
 
         return (
             <div className="submit-form">
@@ -236,13 +261,8 @@ export default class AdicionarMembro extends Component {
 
                         <div className="image-container">
 
-                            <div>
-                                <img 
-                                    src={url} 
-                                    className="imagem"
-                                    alt="Busque a foto"
-                                    name="foto"
-                                    id="foto"/>
+                            <div className="envio">
+                                {$imagePreview}
                             </div>
 
                             <div className="envio">
@@ -256,13 +276,6 @@ export default class AdicionarMembro extends Component {
                                 /> 
                             </div>
 
-                            <div className="envio">                          
-
-                                <button onClick={this.salvarImagem} className="btn btn-success">
-                                    Enviar
-                                </button>
-
-                            </div>
                         </div>
 
                             <label htmlFor="nome"> Nome </label>
@@ -433,7 +446,7 @@ export default class AdicionarMembro extends Component {
                             </select>
                         </div>
                     
-                        <button onClick={this.salvarMembro} className="btn btn-success">
+                        <button onClick={this.salvarImagem} className="btn btn-success">
                             Adicionar
                         </button>
                     </div>
