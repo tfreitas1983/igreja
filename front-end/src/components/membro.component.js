@@ -272,7 +272,9 @@ export default class Membro extends Component {
     }
 
     salvarImagem() {
-        
+        if(!this.state.imagem) {
+            this.atualizaMembro()  
+        } else {
         var data = new FormData()
         data.append('file', this.state.imagem)
                
@@ -290,6 +292,7 @@ export default class Membro extends Component {
                             console.log(e)
                         })
        }
+    }
 
     atualizaSituacao(status) {
         var data = {
