@@ -19,9 +19,9 @@ export default class Membro extends Component {
         this.estadoCep = this.estadoCep.bind(this)
         this.estadoMembro_Desde = this.estadoMembro_Desde.bind(this)
         this.estadoCargo = this.estadoCargo.bind(this)
-        this.estadoImagem = this.estadoImagem.bind(this)
         this.estadoUpload = this.estadoUpload.bind(this)
 
+        this.salvarImagem = this.salvarImagem.bind(this)
         this.buscaMembro = this.buscaMembro.bind(this)
         this.atualizaSituacao = this.atualizaSituacao.bind(this)
         this.atualizaMembro = this.atualizaMembro.bind(this)
@@ -61,23 +61,18 @@ export default class Membro extends Component {
         this.buscaMembro(this.props.match.params.id)
     }
 
-
-    estadoImagem(e) {
-        const foto = e.target.value
-        this.setState(function(prevState) {
-            return {
-                currentMembro: {
-                    ...prevState.currentMembro,
-                    foto: foto
-                }
-            }
-        })
-    }
-
     estadoUpload(e) {
-        this.setState({
-            imagem: e.target.files[0]            
-        })
+        const imagem = e.target.files[0]
+        const foto =  e.target.files[0].name
+
+        this.setState(prevState => ({
+            imagem: imagem,
+            currentMembro: {
+                ...prevState.currentMembro,
+                    foto: foto
+                    
+            }
+        }))
     }
             
     estadoNome(e) {
@@ -268,8 +263,6 @@ export default class Membro extends Component {
                         situacao: response.data.situacao                     
                     }
                 })
-                    console.log(response.data);
-                    
             })
             .catch(e => {
                 console.log(e)
@@ -277,24 +270,23 @@ export default class Membro extends Component {
     }
 
     salvarImagem() {
-
+        
         var data = new FormData()
         data.append('file', this.state.imagem)
-       
+               
             MembroDataService.cadastrarImagem(data)
                         .then(response => {
-                            this.setState({
-                                imagem: response.data.imagem,
-                                foto: response.data.foto
-                            })
-                            console.log(response.data)
-                           
-                            
+                            this.setState(prevState => ({
+                                currentMembro: {
+                                    ...prevState.currentMembro,
+                                    foto: response.data.foto
+                                }
+                            }))
+                            this.atualizaMembro()
                         })
                         .catch(e => {
                             console.log(e)
                         })
-    
        }
 
     atualizaSituacao(status) {
@@ -333,6 +325,8 @@ export default class Membro extends Component {
     }
 
     atualizaMembro() {
+        
+        
         var data = {
             id: this.state.currentMembro.id,
             nome: this.state.currentMembro.nome,
@@ -353,10 +347,10 @@ export default class Membro extends Component {
 
         MembroDataService.editar( this.state.currentMembro.id, data )
             .then(response => {
-                console.log(response.data)
                 this.setState({
                     message: "O membro foi alterado com sucesso"
                 })
+                console.log(response.data)
             })
             .catch(e => {
                 console.log(e)
@@ -408,13 +402,13 @@ export default class Membro extends Component {
                                 <input 
                                     type="file"  
                                     className="upload-btn"
-                                    onChange={this.estadoImagem} 
+                                    onChange={this.estadoUpload} 
                                 /> 
                             </div>
 
                             <div className="envio">                          
                             
-                                <button onClick={this.salvarImagem} className="btn btn-success">
+                                <button type="button" onClick={this.salvarImagem} className="btn btn-success">
                                     Enviar
                                 </button>
 
@@ -557,11 +551,11 @@ export default class Membro extends Component {
                     Apagar
             </button>
 
-            <button type="submit" className="badge badge-success mr-2" onClick={this.atualizaMembro}>
+            <button type="submit" className="badge badge-success mr-2" onClick={this.atualizaMembro} >
                     Alterar
             </button>
             
-            <p>{this.state.message}</p>
+         <p>{this.state.message}</p>
 
         </div>
 

@@ -19,7 +19,6 @@ export default class AdicionarMembro extends Component {
         this.estadoCep = this.estadoCep.bind(this)
         this.estadoMembro_Desde = this.estadoMembro_Desde.bind(this)
         this.estadoCargo = this.estadoCargo.bind(this)
-        this.estadoImagem = this.estadoImagem.bind(this)
         this.estadoUpload = this.estadoUpload.bind(this)
 
         this.salvarImagem = this.salvarImagem.bind(this)
@@ -47,12 +46,6 @@ export default class AdicionarMembro extends Component {
             submitted: false
         }
     }
-
-     estadoImagem(e) {
-       this.setState({
-            foto: e.target.files[0].name
-        }) 
-    }  
 
     estadoUpload(e) {
         this.setState({
@@ -146,17 +139,12 @@ export default class AdicionarMembro extends Component {
         MembroDataService.cadastrarImagem(data)
                     .then(response => {
                         this.setState({
-                            imagem: response.data.imagem,
                             foto: response.data.foto
                         })
-                        console.log(response.data)
-                       
-                        
                     })
                     .catch(e => {
                         console.log(e)
                     })
-
    }
 
     salvarMembro() {
