@@ -13,5 +13,21 @@ export default {
             })
         },
     }),
+    limits: {fileSize: 2 * 1024 * 1024},
+    fileFilter: (req, file, cb) => {
+        const allowMimes = [
+            'image/pjeg',
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/tiff',
+            'image/gif',
+            'image/svg']
+        if(allowMimes.includes(file.mimetype)) {
+            cb(null, true)
+        } else {
+            cb(new Error('Extensão inválida'))
+        }
+    },
 }
 

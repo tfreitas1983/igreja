@@ -10,8 +10,6 @@ module.exports = app => {
 
     router.post("/", membros.cadastrar)
     router.get("/", membros.buscarTodos)
-    //router.get("/situacao", membros.buscarAtivos)
-    //router.get("/images/:filename", membros.buscarImagem)
     router.get("/:id", membros.buscarUm)
     router.put("/:id", membros.editar)
     router.delete("/:id", membros.apagar)

@@ -50,13 +50,26 @@ export default class AdicionarMembro extends Component {
     }
 
     estadoUpload(e) {
-     
-        const imagem = e.target.files[0]
-        this.setState({
-            imagem: imagem,
-            url: URL.createObjectURL(imagem)          
-        })
-  }
+        //Verifica se o usuário escolheu e depois cancelou a escolha do arquivo. Assim a imagem volta a ser a padrão
+        if(!e.target.files[0]){
+            const imagem = {name: "default.jpg", type: "image/jpeg"}
+            const foto = "default.jpg"
+            const url = ""
+            this.setState({
+                imagem: imagem,
+                url: url,
+                foto: foto
+            })
+        }
+        //Quando o usuário escolhe uma imagem a ser enviada
+        else {
+            const imagem = e.target.files[0]
+            this.setState({
+                imagem: imagem,
+                url: URL.createObjectURL(imagem)          
+            })
+        }
+    }
 
     estadoNome(e) {
         this.setState({
@@ -227,21 +240,32 @@ export default class AdicionarMembro extends Component {
     render() {
 
 
-
+        //Monta um array com o nome dos arquivos
         const importAll = require =>
           require.keys().reduce((acc, next) => {
             acc[next.replace("./", "")] = require(next);
             return acc;
           }, {});
-
-        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
+        //No m array somente aceita as extensões de imagens
+        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))
         
+        //Modifica o <img src=""> no JSX caso seja o preview da imagem ou a imagem da pasta
         let $imagePreview = null;
-        if (this.state.url.length > 50) {
-            $imagePreview = <img alt ="" src={this.state.url} />
-        } else {
-            $imagePreview = <img alt ="" src={images[this.state.foto]} />
+        if (this.state.url) {
+            $imagePreview = <img alt="" src={this.state.url} />
         }
+        if(!this.state.url) {
+            $imagePreview = <img alt="" src={images[this.state.foto]} />
+        }
+
+        //Verifica se a imagem possui mais de 2 MB
+        if(this.state.imagem && (this.state.imagem.size > 2 * 1024 * 1024)){
+            alert('Somente arquivos até 2MB')
+        }
+        //Verifica se é uma imagem
+        if(this.state.imagem && this.state.imagem.type.substr(0,6) !== "image/" && this.state.imagem.type !== "") {
+            alert('Somente imagens podem ser enviadas')
+        } 
     
 
         return (
@@ -269,7 +293,7 @@ export default class AdicionarMembro extends Component {
                                 <input 
                                     type="file" 
                                     accept="image/*" 
-                                    className="upload-btn"
+                                    className="file"
                                     onChange={this.estadoUpload}
                                     id="file"
                                     name="file"

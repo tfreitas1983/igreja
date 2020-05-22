@@ -63,18 +63,36 @@ export default class Membro extends Component {
     }
 
     estadoUpload(e) {
-        const imagem = e.target.files[0]
-        const foto =  e.target.files[0].name
-       
-        this.setState(prevState => ({
-            imagem: imagem,
-            url: URL.createObjectURL(imagem),
-            currentMembro: {
-                ...prevState.currentMembro,
-                    foto: foto
-                     
-            }
-        }))
+   
+
+        //Verifica se o usuário escolheu e depois cancelou a escolha do arquivo. Assim a imagem volta a ser a padrão
+        if(!e.target.files[0]){
+            const imagem = {name: "default.jpg", type: "image/jpeg"}
+            const foto = "default.jpg"
+            const url = ""
+            this.setState(prevState => ({
+                imagem: imagem,
+                url: url,
+                foto: foto,
+                currentMembro: {
+                    ...prevState.currentMembro,
+                        foto: foto
+                }
+            }))
+        //Quando o usuário escolhe uma imagem a ser enviada
+        } else {
+            const imagem = e.target.files[0]
+            const foto =  e.target.files[0].name
+            
+            this.setState(prevState => ({
+                imagem: imagem,
+                url: URL.createObjectURL(imagem),
+                currentMembro: {
+                    ...prevState.currentMembro,
+                        foto: foto
+                }
+            }))
+        }
     }
             
     estadoNome(e) {
@@ -272,9 +290,10 @@ export default class Membro extends Component {
     }
 
     salvarImagem() {
-        if(!this.state.imagem) {
+        if(this.state.foto === "default.jpg") {
             this.atualizaMembro()  
-        } else {
+            return false
+        } if(this.state.foto !== "default.jpg") {
         var data = new FormData()
         data.append('file', this.state.imagem)
                
@@ -379,24 +398,34 @@ export default class Membro extends Component {
         const { currentMembro } = this.state
 
 
-        //Pega os nomes dos arquivos
+        //Monta um array com os nomes dos arquivos
         const importAll = require =>
           require.keys().reduce((acc, next) => {
             acc[next.replace("./", "")] = require(next);
             return acc;
           }, {});
+
         // Constante que pega todas as imagens da pasta images
-        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
+        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))
         
         
         //Modifica o <img src=""> no JSX caso seja o preview da imagem ou a imagem da pasta
         let $imagePreview = null;
-        if (this.state.url && currentMembro.foto.length < 30) {
-            $imagePreview = <img alt ="" src={this.state.url} />
-        } if(currentMembro.foto.length > 30) {
-            $imagePreview = <img alt ="" src={images[currentMembro.foto]} />
+        if (this.state.url && currentMembro.foto !== "default.jpg") {
+            $imagePreview = <img alt="" src={this.state.url} />
+        } if(currentMembro.foto.length > 30 || currentMembro.foto === "default.jpg" && !this.state.url) {
+            $imagePreview = <img alt="" src={images[currentMembro.foto]} />
         }
 
+        //Verifica se a imagem possui mais de 2 MB
+        if(this.state.imagem && (this.state.imagem.size > 2 * 1024 * 1024)){
+            alert('Somente arquivos até 2MB')
+        }
+        //Verifica se é uma imagem
+        if(this.state.imagem && this.state.imagem.type.substr(0,6) !== "image/" && this.state.imagem.type !== "") {
+            alert('Somente imagens podem ser enviadas')
+        } 
+      
         
         return (
         <div>
@@ -412,7 +441,8 @@ export default class Membro extends Component {
                             
                             <div className="envio">
                                 <input 
-                                    type="file"  
+                                    type="file" 
+                                    accept="image/*" 
                                     className="upload-btn"
                                     onChange={this.estadoUpload} 
                                 /> 
