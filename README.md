@@ -24,23 +24,25 @@ Instale o docker desktop ou docker toolbox se for Windows 7. Baixe a imagem do m
 Próximas Etapas:
 
 - Implementar o upload de fotos com preview utilizando multer no back-end (svg, jpg, jpeg, png, gif, tiff) com limite de tamanho - FEITO 22/05/2020
+- Implementar o cadastro do templo
 - Implementar relatório de aniversariantes do mês
 - Salvar relatórios em PDF, CSV
 - Imprimir relatórios
 - Paginar a lista de membros
-- Mudar a lista de membros com checkbox para apagar em lote
-- Criar login
 - Implementar o contas a pagar
 - Implementar o contas a receber
 - Implementar o upload múltiplo de arquivos com drag n' drop
 - Implementar relatório de receitas/despesas
 - Implementar os filtros nos relatórios
+- Criar login
 - Criar permissões por login
 - Criar Dashboard com contadores e gráficos
 - Aniversariante do dia
 - Autocompletar na busca
+- Mudar a lista de membros com checkbox para apagar em lote
 - Linha do tempo do membro (consagrações)
 - Doações com cartão
+- Recibo de doação por e-mail
 - Selecionar área da imagem com zoom e recorte
 - Implementar a captura de fotos pela câmera
 - LOG de/para
@@ -54,3 +56,4 @@ Próximas Etapas:
 - Criar colunas no cadastro e edição responsivos
 - Validações:
   - Nome sem receber números
+  - CPF e CNPJ

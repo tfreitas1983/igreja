@@ -413,7 +413,7 @@ export default class Membro extends Component {
         let $imagePreview = null;
         if (this.state.url && currentMembro.foto !== "default.jpg") {
             $imagePreview = <img alt="" src={this.state.url} />
-        } if(currentMembro.foto.length > 30 || currentMembro.foto === "default.jpg" && !this.state.url) {
+        } if((currentMembro.foto.length > 30 || currentMembro.foto === "default.jpg") && !this.state.url) {
             $imagePreview = <img alt="" src={images[currentMembro.foto]} />
         }
 
@@ -586,7 +586,7 @@ export default class Membro extends Component {
                     Apagar
             </button>
 
-            <button type="submit" className="badge badge-success mr-2" onClick={this.salvarImagem} >
+            <button type="submit" className="badge badge-success mr-2" onClick={this.salvarImagem}>
                     Alterar
             </button>
             

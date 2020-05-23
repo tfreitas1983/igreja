@@ -15,16 +15,31 @@ class App extends Component {
           <nav className="navbar fixed-top navbar-expand navbar-dark bg-dark">
             <a href="/membros" className="navbar-brand">Igreja</a>
             <div className="navbar-nav mr-auto">
+
+            <li className="nav-item">
+                <Link to={"/templo"} className="nav-link">
+                  Templo
+                </Link>
+              </li>
+
               <li className="nav-item">
                 <Link to={"/membros"} className="nav-link">
                   Membros
                 </Link>
               </li>
+
               <li className="nav-item">
                 <Link to={"/adicionar"} className="nav-link">
                   Adicionar
                 </Link>
               </li>
+
+              <li className="nav-item">
+                <Link to={"/relatorios"} className="nav-link">
+                  Relatórios
+                </Link>
+              </li>
+              
             </div>
           </nav>
 

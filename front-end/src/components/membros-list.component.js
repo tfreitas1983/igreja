@@ -13,6 +13,7 @@ export default class MembrosLista extends Component {
         this.ativaMembro = this.ativaMembro.bind(this)
         this.removeTodos = this.removeTodos.bind(this)
         this.buscaNome = this.buscaNome.bind(this)
+        this.apagaMembro = this.apagaMembro.bind(this)
 
         this.state = {
             membros: [],
@@ -86,6 +87,18 @@ export default class MembrosLista extends Component {
             })
     }
 
+    apagaMembro() {
+        MembroDataService.apagar(this.state.currentMembro.id)
+            .then(response => {
+                this.props.history.push('/membros')
+                this.atualizaLista()
+            })
+            
+            .catch(e => {
+                console.log(e)
+            })                    
+    }
+
     render() {
         const { buscaNome, membros, currentMembro, currentIndex } = this.state
 
@@ -96,6 +109,8 @@ export default class MembrosLista extends Component {
           }, {});
 
         const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
+
+
 
         return (
             <div className="list row">
@@ -142,6 +157,7 @@ export default class MembrosLista extends Component {
 
                 <div className="col-md-6">
                     {currentMembro ? (
+                    
                         <div>
                             <img 
                                 src={images[currentMembro.foto]}
@@ -227,9 +243,7 @@ export default class MembrosLista extends Component {
                                 <label>
                                     <strong>Membro desde:</strong>
                                 </label>{" "}
-                                
-                                {moment(currentMembro.membro_desde).format('DD/MM/YYYY')}
-                                
+                               {moment(currentMembro.membro_desde).format('DD/MM/YYYY')}
                             </div>
                             
                             <div>
@@ -249,6 +263,10 @@ export default class MembrosLista extends Component {
                             <Link to={"/membros/" + currentMembro.id} className="badge badge-warning">
                                 Editar
                             </Link>
+
+                            <button id="apagar" className="badge badge-danger mr-2" onClick={this.apagaMembro}>
+                                Apagar
+                            </button>
                         </div>
                         ) : (
                             <div>

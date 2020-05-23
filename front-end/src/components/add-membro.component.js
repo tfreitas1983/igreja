@@ -149,23 +149,28 @@ export default class AdicionarMembro extends Component {
         })
     }
 
-   salvarImagem(e) {
-    e.preventDefault()
+   salvarImagem() {
     
-    var data = new FormData()
-    data.append('file', this.state.imagem)
-   
-        MembroDataService.cadastrarImagem(data)
-                    .then(response => {
-                        this.setState({
-                            foto: response.data.foto
-                        })
-                        this.salvarMembro()
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    })
-   }
+        if(this.state.foto === "default.jpg") {
+            this.salvarMembro()  
+            return false
+        } if(this.state.foto !== "default.jpg") {
+        
+            var data = new FormData()
+            data.append('file', this.state.imagem)
+        
+                MembroDataService.cadastrarImagem(data)
+                            .then(response => {
+                                this.setState({
+                                    foto: response.data.foto
+                                })
+                                this.salvarMembro()
+                            })
+                            .catch(e => {
+                                console.log(e)
+                            })
+        }
+    }
 
     salvarMembro() {
 
@@ -246,7 +251,7 @@ export default class AdicionarMembro extends Component {
             acc[next.replace("./", "")] = require(next);
             return acc;
           }, {});
-        //No m array somente aceita as extensões de imagens
+        //No array somente aceita as extensões de imagens
         const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))
         
         //Modifica o <img src=""> no JSX caso seja o preview da imagem ou a imagem da pasta
