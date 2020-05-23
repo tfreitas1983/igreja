@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import MembroDataService from "../services/membro.service"
 import * as moment from 'moment'
-// import url from "../images/default.jpg"
 
 export default class AdicionarMembro extends Component {
     constructor(props) {
@@ -20,8 +19,7 @@ export default class AdicionarMembro extends Component {
         this.estadoMembro_Desde = this.estadoMembro_Desde.bind(this)
         this.estadoCargo = this.estadoCargo.bind(this)
         this.estadoUpload = this.estadoUpload.bind(this)
-       // this.estadoFoto = this.estadoFoto.bind(this)
-
+       
         this.salvarImagem = this.salvarImagem.bind(this)
         this.salvarMembro = this.salvarMembro.bind(this)
         this.novoMembro = this.novoMembro.bind(this)

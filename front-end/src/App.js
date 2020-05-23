@@ -6,6 +6,8 @@ import "./App.css"
 import AdicionarMembro from "./components/add-membro.component.js"
 import Membro from "./components/membro.component"
 import MembrosLista from './components/membros-list.component';
+import TemploLista from './components/templo-list.component';
+import AdicionarTemplo from './components/add-templo.component';
 
 class App extends Component {
   render() {
@@ -17,7 +19,7 @@ class App extends Component {
             <div className="navbar-nav mr-auto">
 
             <li className="nav-item">
-                <Link to={"/templo"} className="nav-link">
+                <Link to={"/membros/templo"} className="nav-link">
                   Templo
                 </Link>
               </li>
@@ -47,7 +49,10 @@ class App extends Component {
             <Switch>
               <Route exact path={["/", "/membros"]} component={MembrosLista} />
               <Route exact path="/adicionar" component={AdicionarMembro} />
+              <Route exact path="/membros/templo" component={TemploLista} />
+              <Route exact path="/membros/templo/adicionar" component={AdicionarTemplo} />
               <Route path="/membros/:id" component={Membro} />
+              
             </Switch>
           </div>
         </div>
