@@ -8,6 +8,7 @@ import Membro from "./components/membro.component"
 import MembrosLista from './components/membros-list.component';
 import TemploLista from './components/templo-list.component';
 import AdicionarTemplo from './components/add-templo.component';
+import Templo from './components/templo.component';
 
 class App extends Component {
   render() {
@@ -31,12 +32,6 @@ class App extends Component {
               </li>
 
               <li className="nav-item">
-                <Link to={"/adicionar"} className="nav-link">
-                  Adicionar
-                </Link>
-              </li>
-
-              <li className="nav-item">
                 <Link to={"/relatorios"} className="nav-link">
                   Relatórios
                 </Link>
@@ -51,6 +46,7 @@ class App extends Component {
               <Route exact path="/adicionar" component={AdicionarMembro} />
               <Route exact path="/membros/templo" component={TemploLista} />
               <Route exact path="/membros/templo/adicionar" component={AdicionarTemplo} />
+              <Route exact path="/membros/templo/:id" component={Templo} />
               <Route path="/membros/:id" component={Membro} />
               
             </Switch>

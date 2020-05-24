@@ -22,7 +22,7 @@ export default class TemploLista extends Component {
 
 
     pegaTemplo() {
-        TemploDataService.buscar()
+        TemploDataService.buscarTodos()
         .then(response => {
             this.setState({
                 templo: response.data
@@ -53,9 +53,20 @@ export default class TemploLista extends Component {
             titulo =  <Link to={"/membros/templo/adicionar"} className="btn btn-info">Cadastrar</Link>
         }
 
+        const importAll = require =>
+          require.keys().reduce((acc, next) => {
+            acc[next.replace("./", "")] = require(next);
+            return acc;
+          }, {});
+
+        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
+
+
         return (
             <div className="list row">
                 <div className="col-md-6">
+
+                <Link to={"/membros/templo/adicionar"} className="btn btn-info">Cadastrar</Link>
                     {titulo}
                     
                     <ul className="list-group">
@@ -73,6 +84,15 @@ export default class TemploLista extends Component {
                 <div className="col-md-6">
                     {current ? (
                         <div>
+
+                            <img 
+                                src={images[current.foto]}
+                                className="imagem"
+                                alt=""
+                                name="foto" 
+                                id="foto"
+                            />
+
                             <div>
                                 <label>
                                     <strong>Razão Social: </strong>

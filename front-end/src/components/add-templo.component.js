@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import TemploDataService from "../services/templo.service"
+import MembroDataService from "../services/membro.service"
 
 export default class AdicionarTemplo extends Component {
     constructor(props) {
@@ -22,6 +23,7 @@ export default class AdicionarTemplo extends Component {
         this.salvarTemplo = this.salvarTemplo.bind(this)
         this.novoTemplo = this.novoTemplo.bind(this)
         this.estadoUpload = this.estadoUpload.bind(this)
+        this.salvarImagem = this.salvarImagem.bind(this)
 
         this.state = {
             id: null,
@@ -39,7 +41,7 @@ export default class AdicionarTemplo extends Component {
             uf: "",
             cep: "",
             situacao: true,
-            logo: "default.jpg",
+            foto: "default.jpg",
             imagem: "",
             url:"",
             submitted: false
@@ -51,12 +53,12 @@ export default class AdicionarTemplo extends Component {
         //Verifica se o usuário escolheu e depois cancelou a escolha do arquivo. Assim a imagem volta a ser a padrão
         if(!e.target.files[0]){
             const imagem = {name: "default.jpg", type: "image/jpeg"}
-            const logo = "default.jpg"
+            const foto = "default.jpg"
             const url = ""
             this.setState({
                 imagem: imagem,
                 url: url,
-                logo: logo
+                foto: foto
             })
         }
         //Quando o usuário escolhe uma imagem a ser enviada
@@ -164,7 +166,7 @@ export default class AdicionarTemplo extends Component {
             cidade: this.state.cidade,
             uf: this.state.uf,
             cep: this.state.cep,
-            logo: this.state.logo
+            foto: this.state.foto
         }
 
             TemploDataService.cadastrar(data)
@@ -184,7 +186,7 @@ export default class AdicionarTemplo extends Component {
                         cidade: response.data.cidade,
                         uf: response.data.uf,
                         cep: response.data.cep,
-                        logo: response.data.logo,
+                        foto: response.data.foto,
                         situacao: response.data.situacao,
                         submitted: true
                     })
@@ -193,6 +195,29 @@ export default class AdicionarTemplo extends Component {
                 .catch(e => {
                     console.log(e)
                 })
+    }
+
+    salvarImagem() {
+    
+        if(this.state.foto === "default.jpg") {
+            this.salvarTemplo()  
+            return false
+        } if(this.state.foto !== "default.jpg") {
+        
+            var data = new FormData()
+            data.append('file', this.state.imagem)
+        
+                MembroDataService.cadastrarImagem(data)
+                            .then(response => {
+                                this.setState({
+                                    foto: response.data.foto
+                                })
+                                this.salvarTemplo()
+                            })
+                            .catch(e => {
+                                console.log(e)
+                            })
+        }
     }
 
     novoTemplo() {
@@ -212,7 +237,7 @@ export default class AdicionarTemplo extends Component {
         uf: "",
         cep: "",
         situacao: true,
-        logo: "default.jpg",
+        foto: "default.jpg",
         submitted: false
         })
     }
@@ -235,7 +260,7 @@ export default class AdicionarTemplo extends Component {
             $imagePreview = <img alt="" src={this.state.url} />
         }
         if(!this.state.url) {
-            $imagePreview = <img alt="" src={images[this.state.logo]} />
+            $imagePreview = <img alt="" src={images[this.state.foto]} />
         }
 
         //Verifica se a imagem possui mais de 2 MB
@@ -282,30 +307,157 @@ export default class AdicionarTemplo extends Component {
 
                             </div>
 
-                            <div>
-
-                                <label htmlFor="nome"> Nome </label>
+                            <div className="form-group">
+                                <label htmlFor="razao"> Razão Social </label>
                                 <input 
                                 type="text" 
                                 className="form-control" 
-                                id="nome" 
+                                id="razao" 
                                 required 
-                                value={this.state.nome} 
-                                onChange={this.estadoNome} 
-                                name="nome" />
+                                value={this.state.razao} 
+                                onChange={this.estadoRazao} 
+                                name="razao" />
                             </div>
                         
                             <div className="form-group">
-                                <label htmlFor="dtnascimento"> Data de Nascimento </label>
+                                <label htmlFor="fantasia"> Nome Fantasia </label>
                                 <input 
                                     type="text" 
                                     className="form-control" 
-                                    id="dtnascimento" 
+                                    id="fantasia" 
                                     required 
-                                    value={this.state.dtnascimento} 
-                                    onChange={this.estadoDtNascimento} 
-                                    name="dtnascimento" />
+                                    value={this.state.fantasia} 
+                                    onChange={this.estadoFantasia} 
+                                    name="fantasia" />
                             </div>
+
+                            <div className="form-group">
+                                <label htmlFor="cnpj"> CNPJ </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="cnpj" 
+                                    value={this.state.cnpj} 
+                                    onChange={this.estadoCNPJ} 
+                                    name="cnpj" />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="inscricao"> Inscrição Municipal </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="inscricao" 
+                                    value={this.state.inscricao} 
+                                    onChange={this.estadoInscricao} 
+                                    name="inscricao" />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="email"> E-mail </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="email" 
+                                    value={this.state.email} 
+                                    onChange={this.estadoEmail} 
+                                    name="email" />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="telefone"> Telefone </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="telefone" 
+                                    value={this.state.telefone} 
+                                    onChange={this.estadoTelefone} 
+                                    name="telefone" />
+                            </div>
+                    
+                            <div className="form-group">
+                                <label htmlFor="rua"> Rua </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="rua" 
+                                    value={this.state.rua} 
+                                    onChange={this.estadoRua} 
+                                    name="rua" />
+                            </div>
+                        
+                            <div className="form-group">
+                                <label htmlFor="num"> Número </label>
+                                <input type="text" 
+                                    className="form-control" 
+                                    id="num" 
+                                    value={this.state.num} 
+                                    onChange={this.estadoNum} 
+                                    name="num" />
+                            </div>
+                        
+                            <div className="form-group">
+                                <label htmlFor="complemento"> Complemento </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="complemento" 
+                                    value={this.state.complemento} 
+                                    onChange={this.estadoComplemeto} 
+                                    name="complemento" />
+                            </div>
+                        
+                            <div className="form-group">
+                                <label htmlFor="bairro"> Bairro </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="bairro" 
+                                    value={this.state.bairro} 
+                                    onChange={this.estadoBairro} 
+                                    name="bairro" />
+                            </div>
+                        
+                            <div className="form-group">
+                                <label htmlFor="cidade"> Cidade </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="cidade" 
+                                    value={this.state.cidade} 
+                                    onChange={this.estadoCidade} 
+                                    name="cidade" />
+                            </div>
+                        
+                            <div className="form-group">
+                                <label htmlFor="uf"> UF </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="uf" 
+                                    value={this.state.uf} 
+                                    onChange={this.estadoUf} 
+                                    name="uf" />
+                            </div>
+                        
+                            <div className="form-group">
+                                <label htmlFor="cep"> CEP </label>
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="cep" 
+                                    value={this.state.cep} 
+                                    onChange={this.estadoCep} 
+                                    name="cep" />
+                            </div>
+
+
+
+
+
+
+
+
                         </div>
                         
                         <button onClick={this.salvarTemplo} className="btn btn-success">

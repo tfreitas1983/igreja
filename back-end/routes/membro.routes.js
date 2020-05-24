@@ -11,7 +11,8 @@ module.exports = app => {
 
     router.post("/", membros.cadastrar)
     router.get("/", membros.buscarTodos)
-    router.get("/templo", templo.buscar)
+    router.get("/templo", templo.buscarTodos)
+    router.get("/templo/:id", templo.buscar)
     router.put("/templo/:id", templo.editar)
     router.get("/:id", membros.buscarUm)
     router.put("/:id", membros.editar)

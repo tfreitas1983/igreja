@@ -110,8 +110,6 @@ export default class MembrosLista extends Component {
 
         const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
 
-
-
         return (
             <div className="list row">
 
@@ -145,12 +143,14 @@ export default class MembrosLista extends Component {
                                 className={"list-group-item " + (index === currentIndex ? "active" : "")} 
                                 onClick={() => this.ativaMembro(membro, index)} 
                                 key={index} >
-                                    {membro.nome}
+                                    {membro.nome}{" "}{<Link to={`/membros/${membro.id}`} id="editar" className="badge badge-warning">Editar</Link>}
                             </li>
                         )) }
                     </ul>
 
-                    <button className="m-3 btn btn-sm btn-danger" onClick={this.removeTodos} >
+                    <Link to={"/adicionar"} className="btn btn-info">Cadastrar</Link>
+
+                    <button className="m-2 btn btn-md btn-danger" onClick={this.removeTodos} >
                         Apagar todos
                     </button>
                 </div>

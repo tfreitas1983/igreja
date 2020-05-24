@@ -23,7 +23,7 @@ exports.cadastrar = (req, res,) => {
         uf: req.body.uf,
         cep: req.body.cep,
         situacao: req.body.situacao ? req.body.situacao: true,
-        logo: req.body.logo
+        foto: req.body.foto
     })
 
     templo
@@ -40,7 +40,9 @@ exports.cadastrar = (req, res,) => {
 }
 
 exports.buscar = (req, res) => {
-    Templo.find({ situacao: true })
+    const id = req.params.id
+
+    Templo.findById(id)
         .then(data => {
             if (!data) 
                 res.status(404).send({ message: "Não foi encontrado nenhum templo ativo" })
@@ -75,4 +77,19 @@ exports.editar = (req, res) => {
                 message: "Erro ao alterar o templo com o id " + id
             })
         })
+}
+
+exports.buscarTodos = (req, res) => {
+    const razao = req.query.razao
+    var condition = razao ? { razao: { $regex: new RegExp(nome), $options: "i" } } : {}
+
+    Templo.find(condition)
+        .then(data => {
+            res.send(data)
+        })
+        .catch(err => {
+            res.status(500).send({
+            message: err.message || "um erro ocorreu ao buscar o templo"
+        })
+    })
 }

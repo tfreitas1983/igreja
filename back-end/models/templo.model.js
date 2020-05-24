@@ -14,7 +14,7 @@ module.exports = mongoose => {
         uf: String,
         cep: String,
         situacao: Boolean,
-        logo: {
+        foto: {
             type: String,
             default: 'logo.jpg'
         }
