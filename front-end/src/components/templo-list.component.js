@@ -50,7 +50,7 @@ export default class TemploLista extends Component {
         if (templo.length > 0) {
             titulo = <h4>Detalhes do templo </h4>
         } else {
-            titulo =  <Link to={"/membros/templo/adicionar"} className="btn btn-info">Cadastrar</Link>
+            titulo =  <Link to={"/templo/adicionar"} className="btn btn-info">Cadastrar</Link>
         }
 
         const importAll = require =>
@@ -66,7 +66,6 @@ export default class TemploLista extends Component {
             <div className="list row">
                 <div className="col-md-6">
 
-                <Link to={"/membros/templo/adicionar"} className="btn btn-info">Cadastrar</Link>
                     {titulo}
                     
                     <ul className="list-group">
@@ -75,7 +74,7 @@ export default class TemploLista extends Component {
                                 className={"list-group-item " + (index === currentIndex ? "active" : "")} 
                                 onClick={() => this.ativaTemplo(templo, index)} 
                                 key={index} >
-                                    {templo.fantasia}
+                                    {templo.fantasia}{<Link to={`/templo/${templo.id}`} id="editar" className="badge badge-warning">Editar</Link>}
                             </li>
                         )) }
                     </ul>

@@ -24,7 +24,7 @@ Instale o docker desktop ou docker toolbox se for Windows 7. Baixe a imagem do m
 Próximas Etapas:
 
 - Implementar o upload de fotos com preview utilizando multer no back-end (svg, jpg, jpeg, png, gif, tiff) com limite de tamanho - FEITO 22/05/2020
-- Implementar o cadastro do templo
+- Implementar o cadastro do templo - FEITO 24/05/2020
 - Implementar relatório de aniversariantes do mês
 - Salvar relatórios em PDF, CSV
 - Imprimir relatórios

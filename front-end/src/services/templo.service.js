@@ -2,16 +2,16 @@ import http from "../http-common"
 
 class TemploDataService {
     buscarTodos() {
-        return http.get("/membros/templo")
+        return http.get("/templo")
     }
     buscar(id) {
-        return http.get(`/membros/templo/${id}`)
+        return http.get(`/templo/${id}`)
     }
     cadastrar(data) {
-        return http.post("/membros/templo", data)
+        return http.post("/templo", data)
     }
     editar(id, data) {
-        return http.put(`/membros/templo/${id}`, data)
+        return http.put(`/templo/${id}`, data)
     }
 }
 
