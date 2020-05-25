@@ -8,11 +8,12 @@ export default class AniversarioLista extends Component {
         this.estadoMes = this.estadoMes.bind(this)
         this.pegaMembros = this.pegaMembros.bind(this)
         this.gerarRelatorio = this.gerarRelatorio.bind(this)
+       
 
         this.state = {
             membros: [],
-            mes: ""/*,
-            resultado:[]*/
+            mes: "",
+            resultado:[]
                    
         }
 
@@ -43,7 +44,10 @@ export default class AniversarioLista extends Component {
     gerarRelatorio() {
         const membros = this.state.membros
         const mes = this.state.mes
-        
+        const resultado = this.state.resultado
+
+        //Cria um array de objetos com os dados dos membros colocando
+        //o mês como propriedade do objeto
         const result = membros.map(function(item, index) {
              return {
                 mes:item.dtnascimento.substr(5,2), 
@@ -52,28 +56,16 @@ export default class AniversarioLista extends Component {
                 dtnascimento: item.dtnascimento, 
                 foto: item.foto
             }
-        })  
-            
-        const resultado = result.filter(function(item) {
-            item.dtnascimento = moment(item.dtnascimento).format('DD/MM')
-          
-            if (mes === item.mes)  {
-                return ({                                         
-                    nome: item.nome, 
-                    id: item.id,
-                    dtnascimento: item.dtnascimento,
-                    foto: item.foto                                       
-                })
-            }
         })
-       console.log(resultado)
-   
+
+        //Fixa um estado no objeto resultado que é um filtro do array de objetos anterior(result) 
+        this.setState({resultado: result.filter(function(item) {
+            item.dtnascimento = moment(item.dtnascimento).format('DD/MM')
+            return mes === item.mes
+        })})   
     }
 
-
     render(){
-
-        const resultado = this.state
 
         const importAll = require =>
           require.keys().reduce((acc, next) => {
@@ -127,32 +119,34 @@ export default class AniversarioLista extends Component {
                     </div> 
                 </div>
 
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="birth-report-list">
-                                
-                                <article key={resultado.id}>
-                                    <div className="col-md-3">
-                                        <img 
-                                            src={images[resultado.foto]}
-                                            className="imagem"
-                                            alt=""
-                                            name="foto" 
-                                            id="foto"
-                                        />
-                                    </div>
-                                    <div className="col-md-3">
-                                        <strong>{resultado.nome}</strong>
-                                    </div>
-                                    <div className="col-md-3">
-                                        <h5>{resultado.dtnascimento}</h5>
-                                    </div>
-                                </article>
-                               
-                            </div>
-                        </div>
-                    </div>              
+                    
+                        {this.state.resultado.map(item => (
+                            <div className="row">
+                                <div className="birth-report-list">
+                                    <article key={item.id}>
 
+                                        <div className="col-md-4">
+                                            <img 
+                                                src={images[item.foto]}
+                                                className="imagem"
+                                                alt=""
+                                                name="foto" 
+                                                id="foto"
+                                            />
+                                        </div>
+
+                                        <div className="col-md-4">
+                                            <strong>{item.nome}</strong>
+                                        </div>
+
+                                        <div className="col-md-4">
+                                            <h5>{item.dtnascimento}</h5>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div> 
+                        ))}
+                     
             </div>
         )
     }

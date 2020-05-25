@@ -98,14 +98,15 @@ img {
 
 .birth-report{
   margin-top: 80px;
+  background: #f0f0f0;
 }
 
 
 .birth-report-list {
-  max-width: 700px;
-  margin: 20px auto 0;
-  padding: 0 20px;
-  background: #eeffee;
+  width: 600px;
+  height: 250px;
+  padding: 15px;
+  background: #f0f0f0;
 }
 
 .birth-report-list article {
@@ -113,5 +114,5 @@ img {
   border: 1px solid #DDD;
   border-radius: 5px;
   padding: 20px;
-  margin-top: 20px;
+  
 }
