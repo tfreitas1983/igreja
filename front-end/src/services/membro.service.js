@@ -30,7 +30,7 @@ class MembroDataService {
     }
 
   cadastrarImagem(file) {
-        return http.post("/files", file)
+        return http.post("/membros/files", file)
     } 
 }
 

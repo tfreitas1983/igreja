@@ -190,7 +190,7 @@ export default class TemploLista extends Component {
                                 { current.situacao ? "Ativo" : "Inativo" }
                             </div>
 
-                            <Link to={"/membros/templo/" + current.id} className="badge badge-warning">
+                            <Link to={"/templo/" + current.id} className="badge badge-warning">
                                     Editar
                             </Link>
                         </div>

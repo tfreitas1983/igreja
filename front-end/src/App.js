@@ -9,6 +9,7 @@ import MembrosLista from './components/membros-list.component';
 import TemploLista from './components/templo-list.component';
 import AdicionarTemplo from './components/add-templo.component';
 import Templo from './components/templo.component';
+import AniversarioLista from './components/aniversariantes-list.component';
 
 class App extends Component {
   render() {
@@ -48,6 +49,7 @@ class App extends Component {
               <Route exact path="/templo/adicionar" component={AdicionarTemplo} />
               <Route exact path="/templo/:id" component={Templo} />
               <Route path="/membros/:id" component={Membro} />
+              <Route exact path="/relatorios" component={AniversarioLista} />
               
             </Switch>
           </div>

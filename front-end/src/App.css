@@ -96,3 +96,22 @@ img {
   font-size: 18px;
 }
 
+.birth-report{
+  margin-top: 80px;
+}
+
+
+.birth-report-list {
+  max-width: 700px;
+  margin: 20px auto 0;
+  padding: 0 20px;
+  background: #eeffee;
+}
+
+.birth-report-list article {
+  background: #FFF;
+  border: 1px solid #DDD;
+  border-radius: 5px;
+  padding: 20px;
+  margin-top: 20px;
+}
