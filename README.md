@@ -25,7 +25,7 @@ Próximas Etapas:
 
 - Implementar o upload de fotos com preview utilizando multer no back-end (svg, jpg, jpeg, png, gif, tiff) com limite de tamanho - FEITO 22/05/2020
 - Implementar o cadastro do templo - FEITO 24/05/2020
-- Implementar relatório de aniversariantes do mês
+- Implementar relatório de aniversariantes do mês - FEITO 25/05/2020
 - Salvar relatórios em PDF, CSV
 - Imprimir relatórios
 - Paginar a lista de membros

@@ -97,22 +97,34 @@ img {
 }
 
 .birth-report{
-  margin-top: 80px;
-  background: #f0f0f0;
+  margin-top: 60px;
+  background: #f9f9f9;  
+  padding: 10px;
+  width: 100%;
 }
 
 
 .birth-report-list {
-  width: 600px;
-  height: 250px;
+  margin-top: 0px;
+  width: 100%;
   padding: 15px;
-  background: #f0f0f0;
+  background: #f9f9f9;
 }
 
 .birth-report-list article {
-  background: #FFF;
+  background: #fcfcfc;
   border: 1px solid #DDD;
   border-radius: 5px;
-  padding: 20px;
-  
+  padding:0px;
+  width: 100%;
+  margin: 0 10px 5px 0px;
+  display: table;  
+}
+
+.birth-report-list article img {
+  margin-left: 10px;
+}
+
+.birth-report-list article h4 {
+  margin-top: 60px;
 }
