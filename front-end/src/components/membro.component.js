@@ -290,7 +290,7 @@ export default class Membro extends Component {
     }
 
     salvarImagem() {
-        if(this.state.foto === "default.jpg") {
+        if(this.state.foto === "default.jpg" || !this.state.url) {
             this.atualizaMembro()  
             return false
         } if(this.state.foto !== "default.jpg") {

@@ -26,8 +26,7 @@ export default class TemploLista extends Component {
         .then(response => {
             this.setState({
                 templo: response.data
-            })
-            console.log(response.data)
+            })            
         })
         .catch(e => {
             console.log(e)

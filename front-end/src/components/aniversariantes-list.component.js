@@ -58,7 +58,8 @@ export default class AniversarioLista extends Component {
             }
         })
 
-        //Fixa um estado no objeto resultado que é um filtro do array de objetos anterior(result) 
+        //Fixa um estado no objeto "resultado", que é um 
+        //filtro do array de objetos anterior (result) 
         this.setState({resultado: result.filter(function(item) {
             item.dtnascimento = moment(item.dtnascimento).format('DD/MM')
             return mes === item.mes
@@ -117,6 +118,10 @@ export default class AniversarioLista extends Component {
                                 onClick={this.gerarRelatorio}>
                             Gerar
                             </button>
+                        </div>
+
+                        <div>
+                            <button onClick={() => window.print()} className="btn btn-info">Imprimir</button>                       
                         </div> 
                     </div>
 

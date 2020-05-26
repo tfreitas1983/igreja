@@ -240,8 +240,7 @@ export default class Templo extends Component {
                         foto: response.data.foto,
                         situacao: response.data.situacao                     
                     }
-                })
-                console.log(response.data)
+                })                
             })
             .catch(e => {
                 console.log(e)
@@ -249,7 +248,7 @@ export default class Templo extends Component {
     }
 
     salvarImagem() {
-        if(this.state.foto === "default.jpg") {
+        if(this.state.foto === "default.jpg" || !this.state.url) {
             this.atualizaTemplo()  
             return false
         } if(this.state.foto !== "default.jpg") {
@@ -419,6 +418,7 @@ export default class Templo extends Component {
                         <div className="form-group">
                             <label htmlFor="cnpj">CNPJ</label>
                             <input
+                            type="number"
                             className="form-control"
                             id="cnpj"
                             value={currentTemplo.cnpj}
@@ -438,6 +438,7 @@ export default class Templo extends Component {
                         <div className="form-group">
                             <label htmlFor="email">E-mail</label>
                             <input
+                            type="email"
                             className="form-control"
                             id="email"
                             value={currentTemplo.email}

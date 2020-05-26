@@ -356,7 +356,7 @@ export default class AdicionarTemplo extends Component {
                             <div className="form-group">
                                 <label htmlFor="email"> E-mail </label>
                                 <input 
-                                    type="text" 
+                                    type="email" 
                                     className="form-control" 
                                     id="email" 
                                     value={this.state.email} 
