@@ -3,7 +3,6 @@ import MembroDataService from "../services/membro.service"
 import { Link } from "react-router-dom"
 import * as moment from 'moment'
 
-
 export default class MembrosLista extends Component {
     constructor(props) {
         super(props)
@@ -14,9 +13,13 @@ export default class MembrosLista extends Component {
         this.removeTodos = this.removeTodos.bind(this)
         this.buscaNome = this.buscaNome.bind(this)
         this.apagaMembro = this.apagaMembro.bind(this)
+        this.prevPage = this.prevPage.bind(this)
+        this.nextPage = this.nextPage.bind(this) 
 
         this.state = {
             membros: [],
+            info: {},
+            page: 1,
             currentMembro: null,
             currentIndex: -1,
             buscaNome: ""
@@ -27,6 +30,21 @@ export default class MembrosLista extends Component {
         this.pegaMembros()
     }
 
+    prevPage = () => {
+        const { page } = this.state;
+        if (page === 1) return;
+        const pageNumber = page - 1;
+        this.pegaMembros(pageNumber)       
+    }
+
+    nextPage = () => {
+        const { page, info } = this.state;
+        if (page === info.pages) return; //.pages é a última pagina e o return não faz nada
+        const pageNumber = page + 1;
+        this.pegaMembros(pageNumber)
+     
+    };
+
     estadoBuscaNome(e) {
         const buscaNome = e.target.value
 
@@ -35,13 +53,15 @@ export default class MembrosLista extends Component {
         })
     }
 
-    pegaMembros() {
-        MembroDataService.buscarTodos()
+    pegaMembros(page = 1) {        
+        MembroDataService.buscarTodos(page)
             .then(response => {
+                const { docs, ...info } = response.data
                 this.setState({
-                    membros: response.data
-                })
-                console.log(response.data)
+                    membros: docs,
+                    info: info,
+                    page: page
+                })                
             })
             .catch(e => {
                 console.log(e)
@@ -100,7 +120,7 @@ export default class MembrosLista extends Component {
     }
 
     render() {
-        const { buscaNome, membros, currentMembro, currentIndex } = this.state
+        const { buscaNome, membros, info, page, currentMembro, currentIndex } = this.state
 
         const importAll = require =>
           require.keys().reduce((acc, next) => {
@@ -148,11 +168,24 @@ export default class MembrosLista extends Component {
                         )) }
                     </ul>
 
-                    <Link to={"/adicionar"} className="btn btn-info">Cadastrar</Link>
+                    <div className="actions">
+                        <button disabled={page === 1} onClick={this.prevPage}>
+                            Anterior
+                        </button>
+                        <button disabled={page === info.pages} onClick={this.nextPage}>
+                            Próxima
+                        </button>
+                    </div>
 
-                    <button className="m-2 btn btn-md btn-danger" onClick={this.removeTodos} >
-                        Apagar todos
-                    </button>
+                    <div className="actions2">
+                  
+                        <Link to={"/adicionar"} className="btn btn-info">Cadastrar</Link>
+
+                        <button className="m-2 btn btn-md btn-danger" onClick={this.removeTodos} >
+                            Apagar todos
+                        </button>
+                    </div>
+                    
                 </div>
 
                 <div className="col-md-6">

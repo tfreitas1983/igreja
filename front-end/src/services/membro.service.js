@@ -1,8 +1,8 @@
 import http from "../http-common"
 
 class MembroDataService {
-    buscarTodos() {
-        return http.get("/membros")
+    buscarTodos(page) {
+        return http.get(`/membros?page=${page}`)
     }
 
     buscarUm(id) {

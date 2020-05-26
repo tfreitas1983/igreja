@@ -27,7 +27,7 @@ Próximas Etapas:
 - Implementar o cadastro do templo - FEITO 24/05/2020
 - Implementar relatório de aniversariantes do mês - FEITO 25/05/2020
 - Imprimir relatórios - FEITO 25/05/2020
-- Paginar a lista de membros
+- Paginar a lista de membros - FEITO 26/05/2020
 - Implementar o contas a pagar
 - Implementar o contas a receber
 - Implementar o upload múltiplo de arquivos com drag n' drop

@@ -24,10 +24,6 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -78,6 +74,49 @@ img {
   margin: auto;
   margin-top: 100px;
   font-weight: 700;
+  
+}
+
+.list-group li {
+  height: 62px;
+  width: 350px;
+}
+
+.actions{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.actions2{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 35px;
+}
+
+.actions button{
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 0;
+  background-image: linear-gradient(to left,#257575, #50a3aa);
+  color: #FFF;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.actions button[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+
+.actions button:hover {
+  background: #257575;
+  color: #FFF;
+  cursor: pointer;
+
 }
 
 .submit-form {

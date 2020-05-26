@@ -39,7 +39,7 @@ exports.cadastrar = (req, res) => {
         })
 }
 
-exports.index = (req,res) => {
+exports.buscarTodos = (req,res) => {
     const {page = 1} = req.query;
     const nome = req.query.nome
     var condition = nome ? { nome: { $regex: new RegExp(nome), $options: "i" } } : {}
@@ -52,7 +52,7 @@ exports.index = (req,res) => {
         var query = {}
     }
     
-    Membro.paginate(query,{page, limit: 10})
+    Membro.paginate(query,{page, limit: 5})
         .then(data => {
             res.send(data)
         })
@@ -62,6 +62,8 @@ exports.index = (req,res) => {
         })
     })
 }
+
+/*
 
 exports.buscarTodos = (req, res) => {
     const nome = req.query.nome
@@ -77,6 +79,8 @@ exports.buscarTodos = (req, res) => {
         })
     })
 }
+
+*/
 
 exports.buscarUm = (req, res) => {
     const id = req.params.id
