@@ -10,7 +10,8 @@ module.exports = app => {
     const upload = multer(multerConfig)
 
     router.post("/membros", membros.cadastrar)
-    router.get("/membros", membros.buscarTodos)
+    //router.get("/membros", membros.buscarTodos)
+    router.get("/membros", membros.index)
     router.get("/templo", templo.buscarTodos)
     router.get("/templo/:id", templo.buscar)
     router.put("/templo/:id", templo.editar)

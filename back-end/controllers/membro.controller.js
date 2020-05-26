@@ -39,14 +39,38 @@ exports.cadastrar = (req, res) => {
         })
 }
 
-exports.buscarTodos = (req, res) => {
+exports.index = (req,res) => {
+    const {page = 1} = req.query;
     const nome = req.query.nome
     var condition = nome ? { nome: { $regex: new RegExp(nome), $options: "i" } } : {}
 
-    Membro.find(condition)
+
+    //Verifica se foi passado o nome na busca
+    if (nome) {
+        var query = Membro.find(condition)
+    } if (!nome) {
+        var query = {}
+    }
+    
+    Membro.paginate(query,{page, limit: 10})
         .then(data => {
             res.send(data)
         })
+        .catch(err => {
+            res.status(500).send({
+            message: err.message || "um erro ocorreu ao buscar os membros"
+        })
+    })
+}
+
+exports.buscarTodos = (req, res) => {
+    const nome = req.query.nome
+    var condition = nome ? { nome: { $regex: new RegExp(nome), $options: "i" } } : {}
+   
+    Membro.find(condition)
+        .then(data => { 
+            res.send(data)                        
+        })        
         .catch(err => {
             res.status(500).send({
             message: err.message || "um erro ocorreu ao buscar os membros"
@@ -179,6 +203,7 @@ exports.cadastrarImagem = (req, res) => {
             })
         })
 }
+
 
 
 

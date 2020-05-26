@@ -1,4 +1,7 @@
+
+
 module.exports = mongoose => {
+    const mongoosePaginate = require('mongoose-paginate')
     var schema = mongoose.Schema ({
         nome: String,
         dtnascimento: { type: Date }, 
@@ -27,8 +30,9 @@ module.exports = mongoose => {
         object.id = _id
         return object
     })
-    
 
-    const Membros = mongoose.model("membros", schema)
+    
+    schema.plugin(mongoosePaginate)
+    const Membros = mongoose.model("membros", schema)    
     return Membros
 }
