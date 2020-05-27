@@ -15,6 +15,7 @@ export default class MembrosLista extends Component {
         this.apagaMembro = this.apagaMembro.bind(this)
         this.prevPage = this.prevPage.bind(this)
         this.nextPage = this.nextPage.bind(this) 
+        this.limpaCurrent = this.limpaCurrent.bind(this)
 
         this.state = {
             membros: [],
@@ -30,11 +31,19 @@ export default class MembrosLista extends Component {
         this.pegaMembros()
     }
 
+    limpaCurrent() {
+        this.setState({
+            currentMembro: null,
+            currentIndex: -1
+        })
+    }
+
     prevPage = () => {
         const { page } = this.state;
         if (page === 1) return;
         const pageNumber = page - 1;
-        this.pegaMembros(pageNumber)       
+        this.pegaMembros(pageNumber) 
+        this.limpaCurrent()
     }
 
     nextPage = () => {
@@ -42,8 +51,11 @@ export default class MembrosLista extends Component {
         if (page === info.pages) return; //.pages é a última pagina e o return não faz nada
         const pageNumber = page + 1;
         this.pegaMembros(pageNumber)
+        this.limpaCurrent()
      
-    };
+    }
+
+
 
     estadoBuscaNome(e) {
         const buscaNome = e.target.value
@@ -56,7 +68,9 @@ export default class MembrosLista extends Component {
     pegaMembros(page = 1) {        
         MembroDataService.buscarTodos(page)
             .then(response => {
-                const { docs, ...info } = response.data
+            //REST do response da API em duas constantes: 
+            // "docs" com os dados do membro e "info" com os dados das páginas
+                const { docs, ...info } = response.data 
                 this.setState({
                     membros: docs,
                     info: info,
@@ -70,10 +84,7 @@ export default class MembrosLista extends Component {
 
     atualizaLista() {
         this.pegaMembros()
-        this.setState({
-            currentMembro: null,
-            currentIndex: -1
-        })
+        this.limpaCurrent()
     }
 
     ativaMembro(membro, index) {
@@ -85,8 +96,7 @@ export default class MembrosLista extends Component {
 
     removeTodos() {
         MembroDataService.apagarTodos()
-            .then(response => {
-                console.log(response.data)
+            .then(response => {               
                 this.atualizaLista()
             })
             .catch(e => {
@@ -98,9 +108,8 @@ export default class MembrosLista extends Component {
         MembroDataService.buscarNome(this.state.buscaNome)
             .then(response => {
                 this.setState({
-                    membros: response.data
-                })
-                console.log(response.data)
+                    membros: response.data.docs
+                })    
             })
             .catch(e => {
                 console.log(e)
@@ -112,8 +121,7 @@ export default class MembrosLista extends Component {
             .then(response => {
                 this.props.history.push('/membros')
                 this.atualizaLista()
-            })
-            
+            })            
             .catch(e => {
                 console.log(e)
             })                    
