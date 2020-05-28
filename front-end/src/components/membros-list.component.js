@@ -16,6 +16,7 @@ export default class MembrosLista extends Component {
         this.prevPage = this.prevPage.bind(this)
         this.nextPage = this.nextPage.bind(this) 
         this.limpaCurrent = this.limpaCurrent.bind(this)
+        this.selecionaPagina = this.selecionaPagina.bind(this)
 
         this.state = {
             membros: [],
@@ -23,18 +24,20 @@ export default class MembrosLista extends Component {
             page: 1,
             currentMembro: null,
             currentIndex: -1,
+            selectedPage: null,
             buscaNome: ""
         }
     }
 
     componentDidMount() {
-        this.pegaMembros()
+        this.pegaMembros()        
     }
 
     limpaCurrent() {
         this.setState({
             currentMembro: null,
-            currentIndex: -1
+            currentIndex: -1,
+            selectedPage: null            
         })
     }
 
@@ -51,11 +54,18 @@ export default class MembrosLista extends Component {
         if (page === info.pages) return; //.pages é a última pagina e o return não faz nada
         const pageNumber = page + 1;
         this.pegaMembros(pageNumber)
-        this.limpaCurrent()
-     
+        this.limpaCurrent()     
     }
 
-
+    selecionaPagina(e) {
+        const i = e.target.id
+        const selectedPage = e.target.id
+         this.setState({
+            selectedPage: i
+        })
+        this.pegaMembros(selectedPage) 
+        this.limpaCurrent()        
+    }
 
     estadoBuscaNome(e) {
         const buscaNome = e.target.value
@@ -127,16 +137,36 @@ export default class MembrosLista extends Component {
             })                    
     }
 
+
+
     render() {
-        const { buscaNome, membros, info, page, currentMembro, currentIndex } = this.state
+        const { buscaNome, membros, info, page, currentMembro, currentIndex} = this.state
 
         const importAll = require =>
           require.keys().reduce((acc, next) => {
-            acc[next.replace("./", "")] = require(next);
-            return acc;
-          }, {});
+            acc[next.replace("./", "")] = require(next)
+            return acc
+          }, {})
 
-        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/))
+        const images = importAll(
+            require.context('../images', false, /\.(png|gif|tiff|jpe?g|svg)$/)
+            )
+
+        //Reinderiza os números das páginas de acordo com o total delas
+        //Deixando selecionado a página corrente no array paginas
+        let i = 0
+        let paginas = []
+        for ( i = 1; i <= info.pages; i++ ) {
+            paginas.push(
+                <li className={"page-item " + (page === i ? "active" : "")} key={i}>
+                    <span className="page-link" key={i} id={i} onClick={this.selecionaPagina} >
+                        {i}
+                    </span>
+                </li>
+            )            
+        } 
+                  
+       
 
         return (
             <div className="list row">
@@ -170,8 +200,8 @@ export default class MembrosLista extends Component {
                             <li 
                                 className={"list-group-item " + (index === currentIndex ? "active" : "")} 
                                 onClick={() => this.ativaMembro(membro, index)} 
-                                key={index} >
-                                    {membro.nome}{" "}{<Link to={`/membros/${membro.id}`} id="editar" className="badge badge-warning">Editar</Link>}
+                                key={index} >  {membro.nome}{" "}
+                                    {<Link to={`/membros/${membro.id}`} id="editar" className="badge badge-warning">Editar</Link>}
                             </li>
                         )) }
                     </ul>
@@ -180,6 +210,11 @@ export default class MembrosLista extends Component {
                         <button disabled={page === 1} onClick={this.prevPage}>
                             Anterior
                         </button>
+                        
+                        <ul className="pagination">
+                        { paginas }
+                        </ul>
+                        
                         <button disabled={page === info.pages} onClick={this.nextPage}>
                             Próxima
                         </button>

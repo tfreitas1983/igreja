@@ -63,25 +63,6 @@ exports.buscarTodos = (req,res) => {
     })
 }
 
-/*
-
-exports.buscarTodos = (req, res) => {
-    const nome = req.query.nome
-    var condition = nome ? { nome: { $regex: new RegExp(nome), $options: "i" } } : {}
-   
-    Membro.find(condition)
-        .then(data => { 
-            res.send(data)                        
-        })        
-        .catch(err => {
-            res.status(500).send({
-            message: err.message || "um erro ocorreu ao buscar os membros"
-        })
-    })
-}
-
-*/
-
 exports.buscarUm = (req, res) => {
     const id = req.params.id
 

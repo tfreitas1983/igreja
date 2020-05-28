@@ -45,6 +45,11 @@ img {
   margin-top: 15px;
   box-shadow: 3px 7px 5px rgba(50, 50, 50, 0.55)
 }
+
+.pagination {
+  text-decoration: none;
+}
+
 #file {
   border-radius: 5px;
   background-image: linear-gradient(to left,#257575, #50a3aa);
