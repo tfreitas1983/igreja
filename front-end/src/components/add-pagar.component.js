@@ -247,6 +247,18 @@ export default class AdicionarPagar extends Component {
                                     value={this.state.CNPJ}
                                     onChange={this.estadoCNPJ}
                                     placeholder="Digite o CNPJ"/>
+                                <select
+                                    className="form-control" 
+                                    id="categoria" 
+                                    name="categoria"
+                                    value={this.state.categoria}                                    
+                                    onChange={this.estadoCategoria}
+                                >                                    
+                                    <option value=""> --Selecione-- </option> 
+                                    <option value="Energia">Energia</option>
+                                    <option value="Água">Água</option>
+                                    <option value="Aluguel">Aluguel</option>
+                                </select>
                                 <button onClick={this.salvarFornecedor} className="btn btn-success">
                                     Adicionar
                                 </button>

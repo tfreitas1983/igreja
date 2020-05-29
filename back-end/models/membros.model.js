@@ -1,5 +1,3 @@
-
-
 module.exports = mongoose => {
     const mongoosePaginate = require('mongoose-paginate')
     var schema = mongoose.Schema ({

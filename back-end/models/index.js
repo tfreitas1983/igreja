@@ -8,6 +8,10 @@ db.url = dbConfig.url
 db.membros = require ('./membros.model')(mongoose)
 db.files = require ('./files.model')(mongoose)
 db.templo = require ('./templo.model')(mongoose)
+db.despesas = require ('./despesas.model')(mongoose)
+db.receitas = require ('./receitas.model')(mongoose)
+db.categorias = require ('./categoria.model')(mongoose)
+db.fornecedores = require ('./fornecedor.model')(mongoose)
 
 module.exports = db
 
