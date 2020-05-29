@@ -37,7 +37,8 @@ export default class MembrosLista extends Component {
         this.setState({
             currentMembro: null,
             currentIndex: -1,
-            selectedPage: null            
+            selectedPage: null,
+            buscaNome: ""            
         })
     }
 

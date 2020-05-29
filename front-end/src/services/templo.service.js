@@ -15,5 +15,4 @@ class TemploDataService {
     }
 }
 
-
 export default new TemploDataService()

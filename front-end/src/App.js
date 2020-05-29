@@ -10,6 +10,9 @@ import TemploLista from './components/templo-list.component';
 import AdicionarTemplo from './components/add-templo.component';
 import Templo from './components/templo.component';
 import AniversarioLista from './components/aniversariantes-list.component';
+import AdicionarPagar from './components/add-pagar.component';
+import AdicionarReceber from './components/add-receber.component';
+import Financeiro from './components/financeiro-list.component';
 
 class App extends Component {
   render() {
@@ -32,6 +35,26 @@ class App extends Component {
                 </Link>
               </li>
 
+              <li className="dropdown"> 
+                <span className="dropbtn">
+                  <Link to={"/financeiro"}>
+                    Financeiro
+                  </Link>
+                </span>               
+                <div className="dropdown-content"> 
+                  <span>
+                    <Link to={"/financeiro/pagar"}>
+                      Contas a Pagar
+                    </Link>
+                  </span>
+                  <span>                
+                    <Link to={"/financeiro/receber"}>
+                      Contas a Receber
+                    </Link>
+                  </span>
+                </div>
+              </li>
+
               <li className="nav-item">
                 <Link to={"/relatorios"} className="nav-link">
                   Relatórios
@@ -49,6 +72,9 @@ class App extends Component {
               <Route exact path="/templo/adicionar" component={AdicionarTemplo} />
               <Route exact path="/templo/:id" component={Templo} />
               <Route path="/membros/:id" component={Membro} />
+              <Route exact path="/financeiro" component={Financeiro} />
+              <Route exact path="/financeiro/pagar" component={AdicionarPagar} />
+              <Route exact path="/financeiro/receber" component={AdicionarReceber} />
               <Route exact path="/relatorios" component={AniversarioLista} />
               
             </Switch>
