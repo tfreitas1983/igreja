@@ -227,3 +227,44 @@ img {
 .birth-report-list article h4 {
   margin-top: 60px;
 }
+
+.modal_bg {
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	z-index:99;
+	background-color:rgba(0, 0, 0, 0.6);
+	
+}
+.modal {
+  position: absolute;
+  display: grid;
+	width:400px;
+	height:300px;
+	background-color:#FFFFFF;
+	z-index:100;
+	top:30%;
+	left:50%;
+	margin-left:-200px;
+}
+
+.modal button{
+  padding: 0px;
+  margin: 0px 60px 10px;
+  border: 0;
+  background-image: linear-gradient(to left,#257575, #50a3aa);
+  color: #FFF;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+
+}
+
+.modal button:hover {
+  background: #276363;
+  color: #FFF;
+  cursor: pointer;
+
+}

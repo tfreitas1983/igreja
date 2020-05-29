@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Modal from './modal.component'
 
 export default class AdicionarPagar extends Component {
     constructor(props) {
@@ -15,6 +14,7 @@ export default class AdicionarPagar extends Component {
         this.estadoParcelas = this.estadoParcelas.bind(this)
         this.estadoSituacao = this.estadoSituacao.bind(this)
 
+        this.salvarFornecedor = this.salvarFornecedor.bind(this)
         this.salvarPagar = this.salvarPagar.bind(this)
         this.novoPagar = this.novoPagar.bind(this)
         this.limpaEstados = this.limpaEstados.bind(this)
@@ -31,7 +31,7 @@ export default class AdicionarPagar extends Component {
             formapagamento: "",
             parcelas: "",
             situacao: "",
-            
+            show: false
         }
     }
 
@@ -111,8 +111,16 @@ export default class AdicionarPagar extends Component {
         }
     }
 
+    salvarFornecedor(){
+
+
+        this.hideModal()
+    }
+
     salvarPagar(){
 
+
+        
     }
 
     novoPagar() {
@@ -137,6 +145,15 @@ export default class AdicionarPagar extends Component {
             dtpagamento: ""
         })
     }
+
+    showModal = () => {
+        this.setState({ show: true })
+      }
+    
+    hideModal = () => {
+        this.setState({ show: false })
+    }
+
         
     render() {
 
@@ -207,6 +224,35 @@ export default class AdicionarPagar extends Component {
                             </select>
                         </div>
         }
+
+        //Mostra o modal de criação de fornecedor
+        let modal = null
+        if(this.state.show == true) {
+            modal = <div className="modal_bg">
+                        <div className="modal">
+                            <h1>Cadastrar Fornecedor</h1>
+                            <input 
+                                type="text"
+                                className="form-control" 
+                                id="fornecedor" 
+                                required 
+                                value={this.state.fornecedor}
+                                onChange={this.estadoFornecedor}
+                                placeholder="Digite a razão social"/>
+                                <input 
+                                    type="number"
+                                    className="form-control" 
+                                    id="CNPJ" 
+                                    required 
+                                    value={this.state.CNPJ}
+                                    onChange={this.estadoCNPJ}
+                                    placeholder="Digite o CNPJ"/>
+                                <button onClick={this.salvarFornecedor} className="btn btn-success">
+                                    Adicionar
+                                </button>
+                        </div>
+                    </div>
+        } 
 
         return (
             <div className="submit-form">
@@ -340,11 +386,15 @@ export default class AdicionarPagar extends Component {
                                     <option value="ABC Mercado"> ABC Mercado </option>
                                     <option value="ABC Papelaria"> ABC Papelaria </option>
                                 </select>
-                                <div>
-                                   <Modal />
-                                </div>
-                            </div>
 
+                                <button onClick={this.showModal}>+</button>
+                                {modal}
+                                
+                                
+ 
+
+
+                            </div>
                         </div>
 
 
