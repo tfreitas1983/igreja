@@ -33,7 +33,7 @@ export default class AniversarioLista extends Component {
         MembroDataService.buscarTodos()
             .then(response => {
                 this.setState({
-                    membros: response.data
+                    membros: response.data.docs
                 })               
             })
             .catch(e => {

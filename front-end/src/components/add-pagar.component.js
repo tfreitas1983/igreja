@@ -1,4 +1,8 @@
 import React, { Component } from 'react'
+import DespesaDataService from "../services/despesa.service"
+import FornecedorDataService from "../services/fornecedor.service"
+import CategoriaDataService from "../services/categoria.service"
+import moment from 'moment'
 
 export default class AdicionarPagar extends Component {
     constructor(props) {
@@ -9,11 +13,17 @@ export default class AdicionarPagar extends Component {
         this.estadoPagamento = this.estadoPagamento.bind(this)
         this.estadoDataLiquidado = this.estadoDataLiquidado.bind(this)
         this.estadoFornecedor = this.estadoFornecedor.bind(this)
+        this.estadoCNPJ = this.estadoCNPJ.bind(this)
         this.estadoCategoria = this.estadoCategoria.bind(this)
+        this.estadoTipo = this.estadoTipo.bind(this)
         this.estadoFormaPagamento = this.estadoFormaPagamento.bind(this)
         this.estadoParcelas = this.estadoParcelas.bind(this)
         this.estadoSituacao = this.estadoSituacao.bind(this)
 
+        this.pegaCategoria = this.pegaCategoria.bind(this)
+        this.pegaFornecedor = this.pegaFornecedor.bind(this)
+
+        this.salvarCategoria = this.salvarCategoria.bind(this)
         this.salvarFornecedor = this.salvarFornecedor.bind(this)
         this.salvarPagar = this.salvarPagar.bind(this)
         this.novoPagar = this.novoPagar.bind(this)
@@ -26,13 +36,24 @@ export default class AdicionarPagar extends Component {
             vencimento: "",
             dtpagamento: "",
             dtliquidado: "",
-            fornecedor: "",
+            empresas: [],
+            razao: "",
+            cnpj: "",
+            cat: [],
             categoria: "",
+            tipo: "despesa",
             formapagamento: "",
             parcelas: "",
             situacao: "",
-            show: false
+            showFornecedor: false,
+            showCategoria: false
+            
         }
+    }
+
+    componentDidMount() {
+        this.pegaCategoria()
+        this.pegaFornecedor()
     }
 
     estadoDescricao(e){
@@ -72,9 +93,9 @@ export default class AdicionarPagar extends Component {
     }
 
     estadoFornecedor(e) {
-        const fornecedor = e.target.value
+        const razao = e.target.value
         this.setState({
-            fornecedor: fornecedor
+            razao: razao
         }) 
     }
 
@@ -111,16 +132,126 @@ export default class AdicionarPagar extends Component {
         }
     }
 
-    salvarFornecedor(){
-
-
-        this.hideModal()
+    estadoCNPJ(e) {
+        const cnpj = e.target.value
+        this.setState({
+            cnpj: cnpj
+        })
     }
 
-    salvarPagar(){
+    estadoTipo(e){
+        const tipo = e.target.value
+        this.setState({
+            tipo: tipo
+        })
+    }
 
+    pegaFornecedor() {
+        FornecedorDataService.buscarTodos()
+            .then(response => {
+                const empresas = response.data
+                this.setState({
+                    empresas: response.data
+                })
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }
 
-        
+    pegaCategoria(){
+        CategoriaDataService.buscarTodos()
+            .then(response => {
+                const cat = response.data
+                this.setState({
+                    cat: response.data
+                })
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }
+
+    salvarCategoria() {
+        var data = {
+            categoria: this.state.categoria,
+            tipo: "despesa"
+        }
+
+        CategoriaDataService.cadastrar(data)
+            .then(response => {
+                this.setState({
+                    categoria: response.data.categoria,
+                    tipo: response.data.tipo
+                })
+            })
+            .catch(e => {
+                console.log(e)
+            })
+            this.pegaCategoria()
+            this.hideModalCategoria()
+            
+    }
+
+    salvarFornecedor(){
+        var data = {
+            razao: this.state.razao,
+            cnpj: this.state.cnpj,
+            categoria: this.state.categoria
+        }
+
+        FornecedorDataService.cadastrar(data)
+            .then(response => {
+                this.setState({
+                    razao: response.data.razao,
+                    cnpj: response.data.cnpj,
+                    categoria: response.data.categoria
+                })
+            })
+            .catch(e => {
+                console.log(e)
+            }) 
+
+        this.pegaFornecedor()
+        this.hideModalFornecedor()
+       
+    }
+
+    salvarPagar() {
+        var data = {
+            descricao: this.state.descricao,
+            valor: this.state.valor,
+            vencimento: moment(this.state.vencimento, 'DD/MM/YYYY'),
+            dtpagamento: moment(this.state.dtpagamento, 'DD/MM/YYYY'),
+            dtliquidacao: moment(this.state.dtliquidado, 'DD/MM/YYYY'),
+            formapagamento: this.state.formapagamento,
+            fornecedor: this.state.razao,
+            categoria: this.state.categoria,
+            parcelas: this.state.parcelas
+        }
+
+        DespesaDataService.cadastrar(data) 
+            .then(response => {
+                this.setState({
+                    id: response.data.id,
+                    numdesp: response.data.numdesp,
+                    descricao: response.data.descricao,
+                    valor: response.data.valor,
+                    vencimento: response.data.vencimento,
+                    dtpagamento: response.data.dtpagamento,
+                    dtliquidacao: response.data.dtliquidacao,
+                    formapagamento: response.data.formapagamento,
+                    fornecedor: response.data.fornecedor,
+                    categoria: response.data.categoria,
+                    parcelas: response.data.parcelas,
+                    situacao: response.data.situacao,
+                    submitted: true
+                })
+                console.log(response.data)
+            })
+            .catch(e => {
+                console.log(e)
+            })       
     }
 
     novoPagar() {
@@ -135,7 +266,6 @@ export default class AdicionarPagar extends Component {
             formapagamento: "",
             parcelas: "",
             situacao: ""
-
         })
     }
 
@@ -146,16 +276,26 @@ export default class AdicionarPagar extends Component {
         })
     }
 
-    showModal = () => {
-        this.setState({ show: true })
+    showModalCategoria = () => {
+        this.setState({ showCategoria: true })
       }
     
-    hideModal = () => {
-        this.setState({ show: false })
+    hideModalCategoria = () => {
+        this.setState({ showCategoria: false })
+    }
+
+    showModalFornecedor = () => {
+        this.setState({ showFornecedor: true })
+      }
+    
+    hideModalFornecedor = () => {
+        this.setState({ showFornecedor: false })
     }
 
         
     render() {
+
+        const {cat, empresas} = this.state
 
         //Verifica se a situação é "Pago" e reinderiza o campo de data de pagamento
         let pago = null
@@ -225,45 +365,72 @@ export default class AdicionarPagar extends Component {
                         </div>
         }
 
-        //Mostra o modal de criação de fornecedor
-        let modal = null
-        if(this.state.show == true) {
-            modal = <div className="modal_bg">
-                        <div className="modal">
-                            <h1>Cadastrar Fornecedor</h1>
+        //Mostra o modal de criação de categoria
+        let modalCategoria = null
+        if(this.state.showCategoria === true) {
+            modalCategoria = 
+                <div className="modal_bg">
+                    <div className="modal">
+                    <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalCategoria}>X</button>
+                        <h2> Cadastrar Categoria</h2>
                             <input 
                                 type="text"
                                 className="form-control" 
-                                id="fornecedor" 
+                                id="categoria" 
                                 required 
-                                value={this.state.fornecedor}
-                                onChange={this.estadoFornecedor}
-                                placeholder="Digite a razão social"/>
-                                <input 
-                                    type="number"
-                                    className="form-control" 
-                                    id="CNPJ" 
-                                    required 
-                                    value={this.state.CNPJ}
-                                    onChange={this.estadoCNPJ}
-                                    placeholder="Digite o CNPJ"/>
-                                <select
-                                    className="form-control" 
-                                    id="categoria" 
-                                    name="categoria"
-                                    value={this.state.categoria}                                    
-                                    onChange={this.estadoCategoria}
-                                >                                    
-                                    <option value=""> --Selecione-- </option> 
-                                    <option value="Energia">Energia</option>
-                                    <option value="Água">Água</option>
-                                    <option value="Aluguel">Aluguel</option>
-                                </select>
-                                <button onClick={this.salvarFornecedor} className="btn btn-success">
-                                    Adicionar
-                                </button>
-                        </div>
+                                value={this.state.categoria}
+                                onChange={this.estadoCategoria}
+                                placeholder="Digite o nome da categoria"/>
+                            
+                            <button onClick={this.salvarCategoria} className="btn btn-success">
+                                Adicionar
+                            </button>
                     </div>
+                </div>
+        }
+
+        //Mostra o modal de criação de fornecedor
+        let modalFornecedor = null
+        if(this.state.showFornecedor === true) {
+            modalFornecedor = 
+                <div className="modal_bg">
+                    <div className="modal">
+                        <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalFornecedor}>X</button>
+                        <h2>Cadastrar Fornecedor</h2>
+                        <input 
+                            type="text"
+                            className="form-control" 
+                            id="fornecedor" 
+                            required 
+                            value={this.state.razao}
+                            onChange={this.estadoFornecedor}
+                            placeholder="Digite a razão social"/>
+                        <input 
+                            type="number"
+                            className="form-control" 
+                            id="cnpj" 
+                            required 
+                            value={this.state.cnpj}
+                            onChange={this.estadoCNPJ}
+                            placeholder="Digite o CNPJ"/>
+                        <select
+                            className="form-control" 
+                            id="categoria" 
+                            name="categoria"
+                            value={this.state.categoria}                                    
+                            onChange={this.estadoCategoria}
+                        >    
+                            <option value="" disabled>---Selecione---</option>
+                            {cat && cat.map((categoria, index) => (
+                                <option value={categoria.categoria} key={index}>{categoria.categoria}</option>
+                            ))}                                
+                        </select>
+
+                        <button onClick={this.salvarFornecedor} className="btn btn-success">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
         } 
 
         return (
@@ -282,37 +449,38 @@ export default class AdicionarPagar extends Component {
                             <div className="form-group">
                                 <label htmlFor="descricao"> Descrição </label>
                                 <input 
-                                type="text" 
-                                className="form-control" 
-                                id="descricao" 
-                                required 
-                                value={this.state.descricao} 
-                                onChange={this.estadoDescricao} 
-                                name="razao" />
+                                    type="text" 
+                                    className="form-control" 
+                                    id="descricao" 
+                                    required 
+                                    value={this.state.descricao} 
+                                    onChange={this.estadoDescricao} 
+                                    name="descricao" />                                
                             </div>
-
-                            <div className="form-group">
+                            <div className="labels">
                                 <label htmlFor="valor"> Valor </label>
-                                <input 
-                                type="number" 
-                                className="form-control" 
-                                id="valor" 
-                                required 
-                                value={this.state.valor} 
-                                onChange={this.estadoValor} 
-                                name="valor" />
+                                <label htmlFor="vencimento"> Vencimento </label>
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="vencimento"> Vencimento </label>
+                            <div className="actions2">
                                 <input 
-                                type="text" 
-                                className="form-control" 
-                                id="vencimento" 
-                                required 
-                                value={this.state.vencimento} 
-                                onChange={this.estadoVencimento} 
-                                name="vencimento" />
+                                    type="number" 
+                                    className="form-control" 
+                                    id="valor" 
+                                    required 
+                                    value={this.state.valor} 
+                                    onChange={this.estadoValor} 
+                                    name="valor"
+                                />
+                                <input 
+                                    type="text" 
+                                    className="form-control" 
+                                    id="vencimento" 
+                                    required 
+                                    value={this.state.vencimento} 
+                                    onChange={this.estadoVencimento} 
+                                    name="vencimento"
+                                />
                             </div>
                             
                             <div className="form-group">
@@ -359,60 +527,53 @@ export default class AdicionarPagar extends Component {
                                 {parcelado}
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="categoria"> Categoria </label>
+                            <label htmlFor="categoria"> Categoria </label>
+                            <div className="actions2">                                
                                 <select 
                                     className="form-control" 
                                     id="categoria" 
                                     name="categoria"
                                     value={this.state.categoria}                                    
                                     onChange={this.estadoCategoria}
-                                >                                    
-                                    <option value=""> --Selecione-- </option> 
-                                    <option value="Energia">Energia</option>
-                                    <option value="Água">Água</option>  
-                                    <option value="Impostos">Impostos</option> 
-                                    <option value="Contador"> Contador </option>
-                                    <option value="Obras"> Obras </option>
-                                    <option value="Material de Limpeza"> Material de Limpeza </option>
-                                    <option value="Despesas Administrativas"> Despesas Administrativas </option>
+                                >     
+                                
+                                    <option value="" disabled>---Selecione---</option>                                
+                                    {cat && cat.map((categoria, index) => (
+                                        <option value={categoria.categoria} key={index}>{categoria.categoria}</option>
+                                    ))}                                
                                 </select>
+
+                                <button id="plus" onClick={this.showModalCategoria}>+</button>
+                                {modalCategoria}
                             </div>
 
                             
                             <label htmlFor="fornecedor"> Fornecedor </label>
-                            <div className="actions">
+                            <div className="actions2">
                                 <select 
                                     className="form-control" 
                                     id="fornecedor" 
                                     name="fornecedor"
-                                    value={this.state.fornecedor}                                    
+                                    value={this.state.razao}                                    
                                     onChange={this.estadoFornecedor}
-                                >                                    
-                                    <option value=""> --Selecione-- </option> 
-                                    <option value="Light">Light</option>
-                                    <option value="CEDAE">CEDAE</option>  
-                                    <option value="Prefeitura">Prefeitura</option> 
-                                    <option value="ABC Contabilidade"> ABC Contabilidade </option>
-                                    <option value="ABC Engenharia"> ABC Engenharia </option>
-                                    <option value="ABC Mercado"> ABC Mercado </option>
-                                    <option value="ABC Papelaria"> ABC Papelaria </option>
+                                >    
+
+                                    <option value="" disabled>---Selecione---</option>                                
+                                    {empresas && empresas.map((empresa, index) => (
+                                        <option value={empresa.razao} key={index}>{empresa.razao}</option>
+                                    ))} 
                                 </select>
 
-                                <button onClick={this.showModal}>+</button>
-                                {modal}
-                                
-                                
- 
-
-
+                                <button id="plus" onClick={this.showModalFornecedor}>+</button>
+                                {modalFornecedor}
                             </div>
                         </div>
 
-
-                        <button onClick={this.salvarPagar} className="btn btn-success">
-                            Adicionar
-                        </button>
+                        <div className="actions">                
+                            <button onClick={this.salvarPagar}>
+                                Adicionar
+                            </button>
+                        </div>
                     </div>
                     )
                 }

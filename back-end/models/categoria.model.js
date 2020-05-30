@@ -1,6 +1,6 @@
 module.exports = mongoose => {
     var categoriaSchema = mongoose.Schema ({
-        descricao: String,
+        categoria: { type: String, unique: true },
         tipo: String,
         situacao: Boolean        
     },

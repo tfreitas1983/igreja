@@ -139,6 +139,11 @@ img {
   width: 350px;
 }
 
+.labels {
+  display: flex;
+  justify-content: space-around;
+}
+
 .actions{
   display: flex;
   justify-content: space-between;
@@ -149,6 +154,19 @@ img {
   justify-content: space-between;
   align-items: center;
   height: 35px;
+}
+
+#plus {
+  padding: 0px 11px 34px 11px;
+  border-radius: 50%;
+  margin-left: 10px;
+  border: 0;
+  background: #257575;
+  color: #FFF;
+  height: 30px;
+  font-size: 19px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .actions button{
@@ -176,10 +194,12 @@ img {
 
 }
 
-.submit-form {
+.submit-form {  
+  position: relative;
   max-width: 300px;
-  margin: auto;
+  justify-content: center;
   margin-top: 80px;
+  display: flex;
 }
 
 .edit-form {
@@ -250,15 +270,19 @@ img {
 	margin-left:-200px;
 }
 
+.modal h2{
+  justify-content: center;
+  display: flex;
+}
+
 .modal button{
   padding: 0px;
   margin: 0px 60px 10px;
   border: 0;
   background-image: linear-gradient(to left,#257575, #50a3aa);
-  color: #FFF;
-  font-size: 16px;
-  font-weight: bold;
+  color: #FFF;  
   cursor: pointer;
+  height: 43px;
 
 }
 
@@ -267,4 +291,18 @@ img {
   color: #FFF;
   cursor: pointer;
 
+}
+
+#closeButton {
+  position: absolute;
+  top: 0;  
+  right: 0;
+  outline: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0px;
+  font-size: 12px;
+  height: 25px;
+  width: 25px;  
 }

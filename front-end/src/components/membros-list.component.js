@@ -223,7 +223,7 @@ export default class MembrosLista extends Component {
 
                     <div className="actions2">
                   
-                        <Link to={"/adicionar"} className="btn btn-info">Cadastrar</Link>
+                        <Link to={"/membros/adicionar"} className="btn btn-info">Cadastrar</Link>
 
                         <button className="m-2 btn btn-md btn-danger" onClick={this.removeTodos} >
                             Apagar todos

@@ -1,7 +1,7 @@
 module.exports = mongoose => {
     var fornecedorSchema = mongoose.Schema ({
         razao: String,
-        cnpj: Number,
+        cnpj: { type: String, unique: true },
         categoria: String,
         situacao: Boolean        
     },
@@ -15,6 +15,6 @@ module.exports = mongoose => {
         })
     
 
-    const Fornecedor = mongoose.model("fornecedor", fornecedorSchema)
+    const Fornecedor = mongoose.model("fornecedores", fornecedorSchema)
     return Fornecedor
 }     

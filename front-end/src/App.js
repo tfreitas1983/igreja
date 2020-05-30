@@ -13,6 +13,8 @@ import AniversarioLista from './components/aniversariantes-list.component';
 import AdicionarPagar from './components/add-pagar.component';
 import AdicionarReceber from './components/add-receber.component';
 import Financeiro from './components/financeiro-list.component';
+import DespesasLista from './components/list-despesas.component';
+import ReceitasLista from './components/list-receitas.component';
 
 class App extends Component {
   render() {
@@ -43,12 +45,12 @@ class App extends Component {
                 </span>               
                 <div className="dropdown-content"> 
                   <span>
-                    <Link to={"/financeiro/pagar"}>
+                    <Link to={"/financeiro/despesas"}>
                       Contas a Pagar
                     </Link>
                   </span>
                   <span>                
-                    <Link to={"/financeiro/receber"}>
+                    <Link to={"/financeiro/receitas"}>
                       Contas a Receber
                     </Link>
                   </span>
@@ -67,14 +69,16 @@ class App extends Component {
           <div className="container mt-3">
             <Switch>
               <Route exact path={"/membros"} component={MembrosLista} />
-              <Route exact path="/adicionar" component={AdicionarMembro} />
+              <Route exact path="/membros/adicionar" component={AdicionarMembro} />
               <Route exact path="/templo" component={TemploLista} />
               <Route exact path="/templo/adicionar" component={AdicionarTemplo} />
               <Route exact path="/templo/:id" component={Templo} />
               <Route path="/membros/:id" component={Membro} />
               <Route exact path="/financeiro" component={Financeiro} />
-              <Route exact path="/financeiro/pagar" component={AdicionarPagar} />
-              <Route exact path="/financeiro/receber" component={AdicionarReceber} />
+              <Route exact path="/financeiro/despesas" component={DespesasLista} />
+              <Route exact path="/financeiro/receitas" component={ReceitasLista} />
+              <Route exact path="/financeiro/despesas/adicionar" component={AdicionarPagar} />
+              <Route exact path="/financeiro/receitas/adicionar" component={AdicionarReceber} />
               <Route exact path="/relatorios" component={AniversarioLista} />
               
             </Switch>

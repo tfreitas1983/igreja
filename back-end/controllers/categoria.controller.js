@@ -2,19 +2,19 @@ const db = require("../models")
 const Categoria = db.categorias
 
 exports.cadastrar = (req, res) => {
-    if (!req.body.descricao || !req.body.tipo) {
-        res.status(400).send({ message: "A descrição e/ou tipo devem ser preenchidos"})
+    if (!req.body.categoria || !req.body.tipo) {
+        res.status(400).send({ message: "A categoria e/ou tipo devem ser preenchidos"})
         return
     }
-
-    const categoria = new Categoria ({
-        descricao: req.body.descricao,
+    
+    const cat = new Categoria ({
+        categoria: req.body.categoria,
         tipo: req.body.tipo,
         situacao: req.body.situacao ? req.body.situacao: true        
     })
-
-    categoria
-        .save(categoria)
+    
+    cat
+        .save(cat)
         .then(data => {
             res.send(data)
         })
@@ -26,8 +26,8 @@ exports.cadastrar = (req, res) => {
 }
 
 exports.buscarTodos = (req,res) => {
-    const descricao = req.query.descricao
-    var condition = descricao ? { descricao: { $regex: new RegExp(descricao), $options: "i" } } : {}
+    const cat = req.query.categoria
+    var condition = cat ? { cat: { $regex: new RegExp(cat), $options: "i" } } : {}
        
     Categoria.find(condition)
         .then(data => {

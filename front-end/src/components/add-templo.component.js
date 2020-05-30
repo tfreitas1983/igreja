@@ -189,8 +189,7 @@ export default class AdicionarTemplo extends Component {
                         foto: response.data.foto,
                         situacao: response.data.situacao,
                         submitted: true
-                    })
-                    console.log(response.data)
+                    })                    
                 })
                 .catch(e => {
                     console.log(e)

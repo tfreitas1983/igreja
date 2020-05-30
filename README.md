@@ -29,6 +29,7 @@ Próximas Etapas:
 - Imprimir relatórios - FEITO 25/05/2020
 - Paginar a lista de membros - FEITO 26/05/2020
 - Implementar o contas a pagar
+  - Criar despesa - FEITO 30/05/2020
 - Implementar o contas a receber
 - Implementar o upload múltiplo de arquivos com drag n' drop
 - Implementar relatório de receitas/despesas
