@@ -194,6 +194,15 @@ img {
 
 }
 
+table, th, td {
+  border: 1px solid black;
+  margin-top: 10px;
+}
+
+table{
+  width: 100%;
+}
+
 .submit-form {  
   position: relative;
   max-width: 300px;

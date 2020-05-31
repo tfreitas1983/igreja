@@ -1,5 +1,5 @@
 module.exports = mongoose => {
-    const mongoosePaginate = require('mongoose-paginate')
+   // const mongoosePaginate = require('mongoose-paginate')
     const AutoIncrement = require('mongoose-sequence')(mongoose)
     var despesasSchema = mongoose.Schema ({
         numdesp: Number,
@@ -23,7 +23,7 @@ module.exports = mongoose => {
             return object
         })
     
-    despesasSchema.plugin(mongoosePaginate)
+   // despesasSchema.plugin(mongoosePaginate)
     despesasSchema.plugin(AutoIncrement, {num:'numdesp_seq', inc_field: 'numdesp'})
     const Despesas = mongoose.model("despesas", despesasSchema)
     return Despesas

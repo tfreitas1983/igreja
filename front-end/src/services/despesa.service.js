@@ -1,8 +1,8 @@
 import http from "../http-common"
 
 class DespesaDataService {
-    buscarTodos(page) {
-        return http.get(`/financeiro/despesas?page=${page}`)
+    buscarTodos() {
+        return http.get("/financeiro/despesas")
     }
 
     buscarUm(id) {
