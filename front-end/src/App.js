@@ -4,15 +4,15 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
 import AdicionarMembro from "./components/add-membro.component.js"
-import Membro from "./components/membro.component"
-import MembrosLista from './components/membros-list.component';
-import TemploLista from './components/templo-list.component';
+import Membro from "./components/edit-membro.component"
+import MembrosLista from './components/list-membros.component';
+import TemploLista from './components/list-templo.component';
 import AdicionarTemplo from './components/add-templo.component';
-import Templo from './components/templo.component';
-import AniversarioLista from './components/aniversariantes-list.component';
+import Templo from './components/edit-templo.component';
+import AniversarioLista from './components/list-aniversariantes.component';
 import AdicionarPagar from './components/add-pagar.component';
 import AdicionarReceber from './components/add-receber.component';
-import Financeiro from './components/financeiro-list.component';
+import Financeiro from './components/list-financeiro.component';
 import DespesasLista from './components/list-despesas.component';
 import ReceitasLista from './components/list-receitas.component';
 import EditDespesas from './components/edit-despesas.component';

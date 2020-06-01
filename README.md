@@ -22,15 +22,19 @@ Instale o docker desktop ou docker toolbox se for Windows 7. Baixe a imagem do m
 4° passo -> Acesse o http://localhost:8081
 
 Próximas Etapas:
-
-- Implementar o upload de fotos com preview utilizando multer no back-end (svg, jpg, jpeg, png, gif, tiff) com limite de tamanho 2 MB- FEITO 22/05/2020
+- Início do projeto - 29/04/2020
+- CRUD de membros - FEITO - 12/05/2020
+- Implementar o upload de fotos com preview utilizando multer no back-end (svg, jpg, jpeg, png, gif, tiff) com limite de tamanho 2 MB - FEITO 22/05/2020
 - Implementar o cadastro do templo - FEITO 24/05/2020
 - Implementar relatório de aniversariantes do mês - FEITO 25/05/2020
 - Imprimir relatórios - FEITO 25/05/2020
 - Paginar a lista de membros - FEITO 26/05/2020
 - Implementar o contas a pagar
   - Criar despesa - FEITO 30/05/2020
+  - Listar despesas - FEITO 31/05/2020
+  - Editar despesa - FEITO 31/05/2020
 - Implementar o contas a receber
+  - Criar receitas
 - Implementar o upload múltiplo de arquivos com drag n' drop
 - Implementar relatório de receitas/despesas
 - Implementar os filtros nos relatórios

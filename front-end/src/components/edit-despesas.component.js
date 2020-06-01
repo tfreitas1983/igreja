@@ -467,6 +467,14 @@ export default class EditDespesas extends Component {
                 </div>
         }
 
+        let filtro = (this.state.cat).filter((item) => {
+            return item.tipo === 'despesa'
+        })
+        
+        let catreceitas = filtro.map((categoria, index) => (
+           <option value={categoria.categoria} key={index}>{categoria.categoria}</option>
+       ))  
+
         //Mostra o modal de criação de fornecedor
         let modalFornecedor = null
         if(this.state.showFornecedor === true) {
@@ -499,9 +507,7 @@ export default class EditDespesas extends Component {
                             onChange={this.estadoCategoria}
                         >    
                             <option value="" disabled>---Selecione---</option>
-                            {cat && cat.map((categoria, index) => (
-                                <option value={categoria.categoria} key={index}>{categoria.categoria}</option>
-                            ))}                                
+                            {catreceitas}                                
                         </select>
 
                         <button onClick={this.salvarFornecedor} className="btn btn-success">
@@ -589,9 +595,7 @@ export default class EditDespesas extends Component {
                                 >     
                                 
                                     <option value="" disabled>---Selecione---</option>                                
-                                    {cat && cat.map((categoria, index) => (
-                                        <option value={categoria.categoria} key={index}>{categoria.categoria}</option>
-                                    ))}                                
+                                    {catreceitas}                                
                                 </select>
 
                                 <button id="plus" onClick={this.showModalCategoria}>+</button>
