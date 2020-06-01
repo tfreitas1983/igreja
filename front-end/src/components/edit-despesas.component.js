@@ -321,7 +321,7 @@ export default class EditDespesas extends Component {
             id: this.state.current.id,
             numdesp: this.state.current.numdesp,
             descricao: this.state.current.descricao,
-            valor: (this.state.current.valor).substr(3,8),
+            valor: this.state.current.valor,
             vencimento: moment(this.state.current.vencimento, 'DD-MM-YYYY'),
             status: this.state.current.status,
             dtpagamento: moment(this.state.current.dtpagamento, 'DD-MM-YYYY'),

@@ -11,15 +11,11 @@ export default class DespesasLista extends Component {
 
         this.state = {
             despesas: []    
-        }
-
-        
+        }        
     }
 
     componentDidMount() {
-        this.pegaDespesas()
-        
-        
+        this.pegaDespesas()        
     }
 
     pegaDespesas() {
@@ -33,23 +29,30 @@ export default class DespesasLista extends Component {
             })
             .catch(e => {
                 console.log(e)
-            })
-            
+            })            
     }
 
     pegaValores() {
         const despesas = this.state.despesas
-        const valores = despesas.map(function(item, index){
-            return item.valor
-            }
-        )        
-        this.setState({
-            resultado: valores.reduce(function(prev, next){
-                return prev += next
-            })        
+        const filtro = despesas.filter(function(item) {
+            return item.situacao === true
         })
 
-        const soma = (this.state.resultado).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL',})
+        this.setState({
+            filtro: filtro
+        })
+        
+        const valores= filtro.map(function(item, index) {
+            return item.valor
+            }            
+        )        
+        
+        const resultado = valores.reduce(function(prev, next){
+             return prev += next
+        })
+       
+
+        const soma = resultado.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL',})
         this.setState({
             soma: soma
         })
@@ -59,7 +62,7 @@ export default class DespesasLista extends Component {
 
     render(){
 
-        const {despesas, soma, resultado} = this.state
+        const {despesas, soma, filtro} = this.state
         
         return (
             <div className="table">
@@ -78,11 +81,14 @@ export default class DespesasLista extends Component {
                                     <th>Liquidação</th>
                                     <th>Categoria</th>
                                     <th>Fornecedor</th>
+                                    <th>Status</th>
+                                    <th>Situação</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {despesas && despesas.map((despesa, index) => (
+                                {filtro && filtro.map((despesa, index) => (
+
                                 <tr key={index+0}>
                                     <td key={index+1}>{despesa.numdesp}</td>
                                     <td key={index+2}>{despesa.descricao}</td>
@@ -92,6 +98,8 @@ export default class DespesasLista extends Component {
                                     <td key={index+6}>{moment(despesa.dtliquidacao).format('DD/MM/YYYY')}</td>
                                     <td key={index+7}>{despesa.categoria}</td>
                                     <td key={index+8}>{despesa.fornecedor}</td>
+                                    <td key={index+9}>{despesa.status}</td>
+                                    <td key={index+'a'}>{despesa.situacao ? 'Ativo' : 'Inativo'}</td>
                                     <td>{<Link to={`/financeiro/despesas/${despesa.id}`} id="editar" className="badge badge-warning">Editar</Link>}</td>
                                 </tr>
                                 ))}
@@ -100,7 +108,7 @@ export default class DespesasLista extends Component {
                             
                                 <tr>
                                     <td>Total</td>
-                                    <td>{this.state.soma}
+                                    <td>{soma}
                                     </td>
                                 </tr>
                             

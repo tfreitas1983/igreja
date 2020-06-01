@@ -461,12 +461,9 @@ export default class AdicionarPagar extends Component {
                                     onChange={this.estadoDescricao} 
                                     name="descricao" />                                
                             </div>
-                            <div className="labels">
+                            
+                            <div className="form-group">
                                 <label htmlFor="valor"> Valor </label>
-                                <label htmlFor="vencimento"> Vencimento </label>
-                            </div>
-
-                            <div className="actions2">
                                 <input 
                                     type="number" 
                                     className="form-control" 
@@ -476,6 +473,10 @@ export default class AdicionarPagar extends Component {
                                     onChange={this.estadoValor} 
                                     name="valor"
                                 />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="vencimento"> Vencimento </label>
                                 <input 
                                     type="text" 
                                     className="form-control" 
