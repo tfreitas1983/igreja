@@ -99,12 +99,10 @@ export default class EditDespesas extends Component {
 
     estadoValor(e) {
         const valor = e.target.value
-        let valornovo = e.target.value
-        console.log(valornovo)
         this.setState(prevState => ({
             current: {
                 ...prevState.current,
-                 valor: valor.replace('R$', '')
+                 valor: valor
             }
         }))
     }
@@ -294,7 +292,7 @@ export default class EditDespesas extends Component {
             id: this.state.current.id,
             numdesp: this.state.current.numdesp,
             descricao: this.state.current.descricao,
-            valor: (this.state.current.valor).replace("R$ ", ""),
+            valor: (this.state.current.valor).replace('R$', '').replace(',', '.'),
             vencimento: moment(this.state.current.vencimento, 'DD-MM-YYYY'),
             status: this.state.current.status,
             dtpagamento: moment(this.state.current.dtpagamento, 'DD-MM-YYYY'),
