@@ -193,15 +193,17 @@ img {
   cursor: pointer;
 
 }
+.table {
+  width: 100vw;
+  margin-top: 60px;
+}
 
 table, th, td {
   border: 1px solid black;
   margin-top: 10px;
+  width: max-content;
 }
 
-table{
-  width: 100%;
-}
 
 .submit-form {  
   position: relative;

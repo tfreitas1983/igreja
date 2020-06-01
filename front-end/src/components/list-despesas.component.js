@@ -62,7 +62,7 @@ export default class DespesasLista extends Component {
         const {despesas, soma, resultado} = this.state
         
         return (
-            <div className="list">
+            <div className="table">
                 <h1>Despesas</h1>
                 <Link to={"/financeiro/despesas/adicionar"} className="btn btn-info">Cadastrar</Link>
                 <div className="row">
@@ -92,7 +92,7 @@ export default class DespesasLista extends Component {
                                     <td key={index+6}>{moment(despesa.dtliquidacao).format('DD/MM/YYYY')}</td>
                                     <td key={index+7}>{despesa.categoria}</td>
                                     <td key={index+8}>{despesa.fornecedor}</td>
-                                    <td>[Editar] [Inativar]</td>
+                                    <td>{<Link to={`/financeiro/despesas/${despesa.id}`} id="editar" className="badge badge-warning">Editar</Link>}</td>
                                 </tr>
                                 ))}
                             </tbody>

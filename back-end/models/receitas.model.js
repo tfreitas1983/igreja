@@ -9,6 +9,7 @@ module.exports = mongoose => {
         dtliquidacao: Date,
         membro: String,
         categoria: String,
+        status: String,
         formapagamento: String,
         parcelas: String,
         situacao: Boolean        

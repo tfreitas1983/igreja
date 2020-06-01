@@ -4,7 +4,7 @@ import FornecedorDataService from "../services/fornecedor.service"
 import CategoriaDataService from "../services/categoria.service"
 import moment from 'moment'
 
-export default class AdicionarPagar extends Component {
+export default class EditDespesas extends Component {
     constructor(props) {
         super(props)
         this.estadoDescricao = this.estadoDescricao.bind(this)
@@ -12,140 +12,209 @@ export default class AdicionarPagar extends Component {
         this.estadoVencimento = this.estadoVencimento.bind(this)
         this.estadoPagamento = this.estadoPagamento.bind(this)
         this.estadoDataLiquidado = this.estadoDataLiquidado.bind(this)
-        this.estadoFornecedor = this.estadoFornecedor.bind(this)
-        this.estadoCNPJ = this.estadoCNPJ.bind(this)
         this.estadoCategoria = this.estadoCategoria.bind(this)
-        this.estadoTipo = this.estadoTipo.bind(this)
+        this.estadoFornecedor = this.estadoFornecedor.bind(this)
         this.estadoFormaPagamento = this.estadoFormaPagamento.bind(this)
         this.estadoParcelas = this.estadoParcelas.bind(this)
-        this.estadoStatus = this.estadoStatus.bind(this)
+        this.estadoCNPJ = this.estadoCNPJ.bind(this)
+        this.estadoTipo = this.estadoTipo.bind(this)
+        this.estadoStatus = this.estadoStatus.bind(this)        
 
         this.pegaCategoria = this.pegaCategoria.bind(this)
         this.pegaFornecedor = this.pegaFornecedor.bind(this)
-
         this.salvarCategoria = this.salvarCategoria.bind(this)
         this.salvarFornecedor = this.salvarFornecedor.bind(this)
         this.salvarPagar = this.salvarPagar.bind(this)
-        this.novoPagar = this.novoPagar.bind(this)
-        this.limpaEstados = this.limpaEstados.bind(this)
+        this.atualizaSituacao = this.atualizaSituacao.bind(this)
+        this.buscaDespesa = this.buscaDespesa.bind(this)
 
 
         this.state = {
-            descricao: "",
-            valor: "",
-            vencimento: "",
-            dtpagamento: "",
-            dtliquidado: "",
-            empresas: [],
-            razao: "",
-            cnpj: "",
-            cat: [],
-            categoria: "",
-            tipo: "despesa",
-            formapagamento: "",
-            parcelas: "",
-            status: "",
-            situacao: "",
-            showFornecedor: false,
-            showCategoria: false
-            
-        }
+            current:{                
+                descricao: "",
+                valor: "",
+                vencimento: moment(),
+                vencimentonovo: "",
+                status: "",
+                dtpagamento: moment(),
+                dtpagamentonovo: "",
+                dtliquidado: moment(),
+                dtliquidadonovo: "",
+                empresas: [],
+                razao: "",
+                cnpj: "",
+                cat: [],
+                categoria: "",
+                tipo: "despesa",
+                formapagamento: "",
+                parcelas: "",
+                situacao: ""
+            },
+            showCategoria: false,
+            showFornecedor: false
+        }        
     }
 
     componentDidMount() {
-        this.pegaCategoria()
+        this.buscaDespesa(this.props.match.params.id) 
+        this.pegaCategoria()   
         this.pegaFornecedor()
     }
 
-    estadoDescricao(e){
-        const descricao = e.target.value
-        this.setState({
-            descricao: descricao
-        })
-
+    buscaDespesa (id) {
+        DespesaDataService.buscarUm(id)
+            .then(response => {
+                this.setState({
+                    current: {
+                        id: response.data.id,
+                        numdesp: response.data.numdesp,
+                        descricao: response.data.descricao,
+                        valor: response.data.valor,
+                        vencimento: moment(response.data.vencimento).format('DD/MM/YYYY'),
+                        status: response.data.status,
+                        dtpagamento: moment(response.data.dtpagamento).format('DD/MM/YYYY'),
+                        dtliquidado: moment(response.data.dtliquidacao).format('DD/MM/YYYY'),
+                        formapagamento: response.data.formapagamento,
+                        fornecedor: response.data.fornecedor,
+                        categoria: response.data.categoria,
+                        parcelas: response.data.parcelas,
+                        situacao: response.data.situacao
+                    }
+                })
+            })            
+            .catch(e => {
+                console.log(e)
+            })  
     }
 
-    estadoValor(e){
+    estadoDescricao(e) {
+        const descricao = e.target.value
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 descricao: descricao
+            }
+        }))
+    }
+
+    estadoValor(e) {
         const valor = e.target.value
-        this.setState({
-            valor: valor
-        }) 
+        let valornovo = e.target.value
+        console.log(valornovo)
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 valor: valor.replace('R$', '')
+            }
+        }))
     }
 
     estadoVencimento(e) {
         const vencimento = e.target.value
-        this.setState({
-            vencimento: vencimento
-        }) 
-    }
-
-    estadoPagamento(e) {
-        const dtpagamento = e.target.value
-        this.setState({
-            dtpagamento: dtpagamento
-        }) 
-    }
-
-    estadoDataLiquidado(e) {
-        const dtliquidado = e.target.value
-        this.setState({
-            dtliquidado: dtliquidado
-        }) 
-    }
-
-    estadoFornecedor(e) {
-        const razao = e.target.value
-        this.setState({
-            razao: razao
-        }) 
-    }
-
-    estadoCategoria(e) {
-        const categoria = e.target.value
-        this.setState({
-            categoria: categoria
-        }) 
-    }
-
-    estadoFormaPagamento(e) {
-        const formapagamento = e.target.value
-        this.setState({
-            formapagamento: formapagamento
-        }) 
-    }
-
-    estadoParcelas(e) {
-        const parcelas = e.target.value
-        this.setState({
-            parcelas: parcelas
-        }) 
+        const vencimentonovo = e.target.value
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 vencimento: vencimentonovo
+            }
+        }))
     }
 
     estadoStatus(e) {
         const status = e.target.value
-        this.setState({
-            status: status
-        }) 
-        //Se a situação for pago ou liquidado e voltar à pendente
-        //deve-se limpar os estados desses campos
-        if(status === "Pendente") {
-            this.limpaEstados()
-        }
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 status: status
+            }
+        }))  
     }
+
+    estadoPagamento(e) {
+        const dtpagamento = e.target.value
+        const dtpagamentonovo = e.target.value
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 dtpagamento: dtpagamentonovo
+            }
+        }))
+    }
+
+    estadoDataLiquidado(e) {
+        const dtliquidado = e.target.value
+        const dtliquidadonovo = e.target.value
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 dtliquidado: dtliquidadonovo
+            }
+        }))
+    }
+
+    estadoCategoria(e) {
+        const categoria = e.target.value
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 categoria: categoria
+            }
+        }))
+    }
+
+    estadoFornecedor(e) {
+        const razao = e.target.value
+        const fornecedor = e.target.value
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 razao: razao,
+                 fornecedor: fornecedor
+            }
+        }))
+    }
+
+    estadoFormaPagamento(e) {
+        const formapagamento = e.target.value
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 formapagamento: formapagamento
+            }
+        }))
+    }
+
+    estadoParcelas(e) {
+        const parcelas = e.target.value
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 parcelas: parcelas
+            }
+        }))
+    }
+
 
     estadoCNPJ(e) {
         const cnpj = e.target.value
-        this.setState({
-            cnpj: cnpj
-        })
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 cnpj: cnpj
+            }
+        }))
     }
 
-    estadoTipo(e){
+    estadoTipo(e) {
         const tipo = e.target.value
-        this.setState({
-            tipo: tipo
-        })
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                 tipo: tipo
+            }
+        }))
     }
+
 
     pegaFornecedor() {
         FornecedorDataService.buscarTodos()
@@ -175,7 +244,7 @@ export default class AdicionarPagar extends Component {
 
     salvarCategoria() {
         var data = {
-            categoria: this.state.categoria,
+            categoria: this.state.current.categoria,
             tipo: "despesa"
         }
 
@@ -196,9 +265,9 @@ export default class AdicionarPagar extends Component {
 
     salvarFornecedor(){
         var data = {
-            razao: this.state.razao,
-            cnpj: this.state.cnpj,
-            categoria: this.state.categoria
+            razao: this.state.current.razao,
+            cnpj: this.state.current.cnpj,
+            categoria: this.state.current.categoria
         }
 
         FornecedorDataService.cadastrar(data)
@@ -218,98 +287,105 @@ export default class AdicionarPagar extends Component {
        
     }
 
+
     salvarPagar() {
+
         var data = {
-            descricao: this.state.descricao,
-            valor: this.state.valor,
-            vencimento: moment(this.state.vencimento, 'DD/MM/YYYY'),
-            status: this.state.status,
-            dtpagamento: moment(this.state.dtpagamento, 'DD/MM/YYYY'),
-            dtliquidacao: moment(this.state.dtliquidado, 'DD/MM/YYYY'),
-            formapagamento: this.state.formapagamento,
-            fornecedor: this.state.razao,
-            categoria: this.state.categoria,
-            parcelas: this.state.parcelas            
+            id: this.state.current.id,
+            numdesp: this.state.current.numdesp,
+            descricao: this.state.current.descricao,
+            valor: (this.state.current.valor).replace("R$ ", ""),
+            vencimento: moment(this.state.current.vencimento, 'DD-MM-YYYY'),
+            status: this.state.current.status,
+            dtpagamento: moment(this.state.current.dtpagamento, 'DD-MM-YYYY'),
+            dtliquidacao: moment(this.state.current.dtliquidado, 'DD-MM-YYYY'),
+            formapagamento: this.state.current.formapagamento,
+            fornecedor: this.state.current.razao,
+            categoria: this.state.current.categoria,
+            parcelas: this.state.current.parcelas            
         }
 
-        DespesaDataService.cadastrar(data) 
+        DespesaDataService.editar(this.state.current.id, data)
+        .then(response => {
+            this.setState({
+                message: "A despesa foi alterada com sucesso"
+            })
+            
+        })
+        .catch(e => {
+            console.log(e)           
+        })
+    
+    }
+
+    atualizaSituacao(estado) {
+        var data = {
+            id: this.state.current.id,
+            numdesp: this.state.current.numdesp,
+            descricao: this.state.current.descricao,
+            valor: (this.state.current.valor).substr(3,8),
+            vencimento: moment(this.state.current.vencimento, 'DD-MM-YYYY'),
+            status: this.state.current.status,
+            dtpagamento: moment(this.state.current.dtpagamento, 'DD-MM-YYYY'),
+            dtliquidacao: moment(this.state.current.dtliquidado, 'DD-MM-YYYY'),
+            formapagamento: this.state.current.formapagamento,
+            fornecedor: this.state.current.razao,
+            categoria: this.state.current.categoria,
+            parcelas: this.state.current.parcelas,
+            situacao: estado            
+        }
+
+        DespesaDataService.editar(this.state.current.id, data)
             .then(response => {
-                this.setState({
-                    id: response.data.id,
-                    numdesp: response.data.numdesp,
-                    descricao: response.data.descricao,
-                    valor: response.data.valor,
-                    vencimento: response.data.vencimento,
-                    dtpagamento: response.data.dtpagamento,
-                    dtliquidacao: response.data.dtliquidacao,
-                    formapagamento: response.data.formapagamento,
-                    fornecedor: response.data.fornecedor,
-                    categoria: response.data.categoria,
-                    parcelas: response.data.parcelas,
-                    status: response.data.status,
-                    situacao: response.data.situacao,
-                    submitted: true
-                })
-                console.log(response.data)
+                this.setState(prevState => ({
+                    current: {
+                        ...prevState.current,
+                        situacao: estado
+                    }
+                }))
+
             })
             .catch(e => {
                 console.log(e)
-            })       
+            })
+
     }
 
-    novoPagar() {
-        this.setState({
-            descricao: "",
-            valor: "",
-            vencimento: "",
-            dtpagamento: "",
-            dtliquidado: "",
-            fornecedor: "",
-            categoria: "",
-            formapagamento: "",
-            status: "",
-            parcelas: "",
-            situacao: ""
-        })
-    }
-
-    limpaEstados(){
-        this.setState({
-            dtliquidado: "",
-            dtpagamento: ""
-        })
-    }
-
-    showModalCategoria = () => {
+    showModalCategoria = (e) => {
+        e.preventDefault()
         this.setState({ showCategoria: true })
-      }
+    }
     
     hideModalCategoria = () => {
         this.setState({ showCategoria: false })
     }
 
-    showModalFornecedor = () => {
+    showModalFornecedor = (e) => {
+        e.preventDefault()
         this.setState({ showFornecedor: true })
-      }
+    }
     
     hideModalFornecedor = () => {
         this.setState({ showFornecedor: false })
     }
 
+    
+
+    render(){
+
+        const {current, cat, empresas} = this.state
         
-    render() {
-
-        const {cat, empresas} = this.state
-
+        
+        
         //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
         let pago = null
-        if(this.state.status === "Pago") {
+        if(current.status === "Pago") {
             pago = <div className="form-group">
                         <label> Data pagamento </label>
                             <input type="text" className="form-control" 
                                 id="dtpagamento" 
                                 required 
-                                value={this.state.dtpagamento} 
+                                value={current.dtpagamento} 
                                 onChange={this.estadoPagamento} 
                                 name="dtpagamento"
                             />
@@ -318,30 +394,30 @@ export default class AdicionarPagar extends Component {
 
         //Verifica se o status é "Liquidado" e reinderiza o campo de data de liquidação
         let liquidado = null
-        if(this.state.status === "Liquidado") {
+        if(current.status === "Liquidado") {
             pago = 
                 <div className="form-group">
                     <label> Data pagamento </label>
-                        <input type="text" className="form-control" id="dtpagamento" required value={this.state.dtpagamento} onChange={this.estadoPagamento} name="dtpagamento" />
+                        <input type="text" className="form-control" id="dtpagamento" required value={current.dtpagamento} onChange={this.estadoPagamento} name="dtpagamento" />
                 </div>
             liquidado = 
                 <div className="form-group">
                     <label> Data de liquidação </label>
-                    <input type="text" className="form-control" id="dtliquidado" required value={this.state.dtliquidado} onChange={this.estadoDataLiquidado} name="dtliquidado" />
+                    <input type="text" className="form-control" id="dtliquidado" required value={current.dtliquidado} onChange={this.estadoDataLiquidado} name="dtliquidado" />
                 </div> 
         }
 
         
         //Verifica se o status não é parcelado para liberar as formas de pagamento
         let selecionado = ""
-        if(this.state.status !== "Parcelado") {
-            selecionado = this.state.formapagamento
+        if(current.status !== "Parcelado") {
+            selecionado = current.formapagamento
         }
         
         //Verifica se o pagamento é parcelado, reinderiza a quantidade de parcelas
         //e escolhe a forma de pagamento "Cartão de Crédito"
         let parcelado = null
-        if(this.state.status === "Parcelado") { 
+        if(current.status === "Parcelado") { 
             selecionado = "Cartão de Crédito"
             parcelado = <div className="form-group">
                             <label> Número de parcelas </label>
@@ -349,7 +425,7 @@ export default class AdicionarPagar extends Component {
                                 className="form-control" 
                                 id="parcelas" 
                                 name="parcelas"
-                                value={this.state.parcelas}                                    
+                                value={current.parcelas}                                    
                                 onChange={this.estadoParcelas}
                             >                                    
                                 <option value=""> --Selecione-- </option> 
@@ -382,7 +458,7 @@ export default class AdicionarPagar extends Component {
                                 className="form-control" 
                                 id="categoria" 
                                 required 
-                                value={this.state.categoria}
+                                value={current.categoria}
                                 onChange={this.estadoCategoria}
                                 placeholder="Digite o nome da categoria"/>
                             
@@ -406,7 +482,7 @@ export default class AdicionarPagar extends Component {
                             className="form-control" 
                             id="fornecedor" 
                             required 
-                            value={this.state.razao}
+                            value={current.razao}
                             onChange={this.estadoFornecedor}
                             placeholder="Digite a razão social"/>
                         <input 
@@ -414,14 +490,14 @@ export default class AdicionarPagar extends Component {
                             className="form-control" 
                             id="cnpj" 
                             required 
-                            value={this.state.cnpj}
+                            value={current.cnpj}
                             onChange={this.estadoCNPJ}
                             placeholder="Digite o CNPJ"/>
                         <select
                             className="form-control" 
                             id="categoria" 
                             name="categoria"
-                            value={this.state.categoria}                                    
+                            value={current.categoria}                                    
                             onChange={this.estadoCategoria}
                         >    
                             <option value="" disabled>---Selecione---</option>
@@ -437,63 +513,35 @@ export default class AdicionarPagar extends Component {
                 </div>
         } 
 
+        
         return (
-            <div className="submit-form">
-                { this.state.submitted ? (
-                    <div>
-                        <h4> Envio completado com sucesso!</h4>
-                        <button className="btn btn-success" onClick={this.novoPagar}>
-                            Adicionar
-                        </button>
-                    </div>
-                ) : (                
-                    <div>
-                        <h4> Cadastrar Despesa </h4>
-                        <div className="form-group">
+            <div className="table">
+                { current ? (
+                    <div className="edit-form">
+                        <h2>Editar despesa #{current.numdesp}</h2>
+                        <form>
                             <div className="form-group">
-                                <label htmlFor="descricao"> Descrição </label>
-                                <input 
-                                    type="text" 
-                                    className="form-control" 
-                                    id="descricao" 
-                                    required 
-                                    value={this.state.descricao} 
-                                    onChange={this.estadoDescricao} 
-                                    name="descricao" />                                
-                            </div>
-                            <div className="labels">
-                                <label htmlFor="valor"> Valor </label>
-                                <label htmlFor="vencimento"> Vencimento </label>
+                                <label htmlFor="descricao">Descrição</label>
+                                <input type="text" className="form-control" id="descricao" value={current.descricao} onChange={this.estadoDescricao} />
+                            </div> 
+
+                            <div className="form-group">
+                                <label htmlFor="valor">Valor</label>
+                                <input type="text" className="form-control" id="valor" value={current.valor.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL',})} onChange={this.estadoValor} />
                             </div>
 
-                            <div className="actions2">
-                                <input 
-                                    type="number" 
-                                    className="form-control" 
-                                    id="valor" 
-                                    required 
-                                    value={this.state.valor} 
-                                    onChange={this.estadoValor} 
-                                    name="valor"
-                                />
-                                <input 
-                                    type="text" 
-                                    className="form-control" 
-                                    id="vencimento" 
-                                    required 
-                                    value={this.state.vencimento} 
-                                    onChange={this.estadoVencimento} 
-                                    name="vencimento"
-                                />
-                            </div>
-                            
+                            <div className="form-group">
+                                <label htmlFor="vencimento">Vencimento</label>
+                                <input type="text" className="form-control" id="vencimento" value={current.vencimento} onChange={this.estadoVencimento} />
+                            </div> 
+
                             <div className="form-group">
                                 <label htmlFor="status"> Status </label>
                                 <select 
                                     className="form-control" 
                                     id="status" 
                                     name="status"
-                                    value={this.state.status}                                    
+                                    value={current.status}                                    
                                     onChange={this.estadoStatus}
                                 >   
                                     <option value=""> --Selecione-- </option>                                 
@@ -507,7 +555,8 @@ export default class AdicionarPagar extends Component {
 
                             <div className="form-group">
                                 {pago} {liquidado}
-                            </div>  
+                            </div>
+
 
                             <div className="form-group">
                                 <label htmlFor="formapagamento"> Forma de pagamento </label>
@@ -537,7 +586,7 @@ export default class AdicionarPagar extends Component {
                                     className="form-control" 
                                     id="categoria" 
                                     name="categoria"
-                                    value={this.state.categoria}                                    
+                                    value={current.categoria}                                    
                                     onChange={this.estadoCategoria}
                                 >     
                                 
@@ -558,7 +607,7 @@ export default class AdicionarPagar extends Component {
                                     className="form-control" 
                                     id="fornecedor" 
                                     name="fornecedor"
-                                    value={this.state.razao}                                    
+                                    value={current.fornecedor}                                    
                                     onChange={this.estadoFornecedor}
                                 >    
 
@@ -571,17 +620,34 @@ export default class AdicionarPagar extends Component {
                                 <button id="plus" onClick={this.showModalFornecedor}>+</button>
                                 {modalFornecedor}
                             </div>
-                        </div>
 
-                        <div className="actions">                
-                            <button onClick={this.salvarPagar}>
-                                Adicionar
+                        </form>
+                        {current.situacao ? (
+                            <button className="badge badge-primary mr-2" onClick={() => this.atualizaSituacao(false)}>
+                                Inativar
                             </button>
-                        </div>
+                        ) : (
+                            <button className="badge badge-primary mr-2" onClick={() => this.atualizaSituacao(true)}>
+                                Ativar
+                            </button>
+                        )}
+
+                        <button type="submit" className="badge badge-success mr-2" onClick={this.salvarPagar}>
+                                Alterar
+                        </button>
+                
+                        <p>{this.state.message}</p>
+
                     </div>
+                    ) : (
+                        <div>
+                            <br />
+                            <p>Selecione um membro...</p>
+                        </div>
                     )
                 }
             </div>
         )
     }
+
 }

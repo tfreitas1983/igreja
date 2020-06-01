@@ -15,6 +15,7 @@ import AdicionarReceber from './components/add-receber.component';
 import Financeiro from './components/financeiro-list.component';
 import DespesasLista from './components/list-despesas.component';
 import ReceitasLista from './components/list-receitas.component';
+import EditDespesas from './components/edit-despesas.component';
 
 class App extends Component {
   render() {
@@ -66,7 +67,7 @@ class App extends Component {
             </div>
           </nav>
 
-          <div className="container mt-3">
+          <div className="container mt-6">
             <Switch>
               <Route exact path={"/membros"} component={MembrosLista} />
               <Route exact path="/membros/adicionar" component={AdicionarMembro} />
@@ -79,6 +80,7 @@ class App extends Component {
               <Route exact path="/financeiro/receitas" component={ReceitasLista} />
               <Route exact path="/financeiro/despesas/adicionar" component={AdicionarPagar} />
               <Route exact path="/financeiro/receitas/adicionar" component={AdicionarReceber} />
+              <Route exact path="/financeiro/despesas/:id" component={EditDespesas} />
               <Route exact path="/relatorios" component={AniversarioLista} />
               
             </Switch>

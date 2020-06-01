@@ -5,21 +5,26 @@ export default class Financeiro extends Component {
     constructor(props) {
         super(props)
 
-        this.salvarReceber = this.salvarReceber.bind(this)
-        this.novoReceber = this.novoReceber.bind(this)
+        this.pegaDespesas = this.pegaDespesas.bind(this)
+        this.pegaReceitas = this.pegaReceitas.bind(this)
 
         this.state = {
 
         }
-
-
     }
 
-    salvarReceber(){
-
+    componentDidMount(){
+        this.pegaDespesas()
+        this.pegaReceitas()
     }
 
-    novoReceber() {
+    pegaDespesas() {
+        this.setState({
+        
+        })
+    }
+
+    pegaReceitas() {
         this.setState({
         
         })
@@ -28,8 +33,8 @@ export default class Financeiro extends Component {
     render() {
 
         return (
-            <div>
-
+            <div className="table">
+                <h1>Lista de receitas e despesas</h1>
             </div>
 
         )

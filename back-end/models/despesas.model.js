@@ -11,6 +11,7 @@ module.exports = mongoose => {
         fornecedor: String,
         categoria: String,
         formapagamento: String,
+        status: String,
         parcelas: String,
         situacao: Boolean        
     },
