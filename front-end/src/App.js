@@ -16,6 +16,7 @@ import Financeiro from './components/list-financeiro.component';
 import DespesasLista from './components/list-despesas.component';
 import ReceitasLista from './components/list-receitas.component';
 import EditDespesas from './components/edit-despesas.component';
+import EditReceitas from './components/edit-receitas.component';
 
 class App extends Component {
   render() {
@@ -81,6 +82,7 @@ class App extends Component {
               <Route exact path="/financeiro/despesas/adicionar" component={AdicionarPagar} />
               <Route exact path="/financeiro/receitas/adicionar" component={AdicionarReceber} />
               <Route exact path="/financeiro/despesas/:id" component={EditDespesas} />
+              <Route exact path="/financeiro/receitas/:id" component={EditReceitas} />
               <Route exact path="/relatorios" component={AniversarioLista} />
               
             </Switch>

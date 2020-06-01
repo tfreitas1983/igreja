@@ -462,14 +462,14 @@ export default class AdicionarMembro extends Component {
                                 onChange={this.estadoCargo}
                             >                                    
                                 <option value="Membro">Membro</option>
-                                <option value="Estrela">Estrela</option>  
+                                <option value="Padre/Pastor">Padre/Pastor</option>  
                                 <option value="Obreiro(a)">Obreiro(a)</option> 
                                 <option value="Diácono/Diaconisa"> Diácono/Diaconisa </option>
-                                <option value="Renascer"> Renascer </option>
-                                <option value="Díscipulos Teus">Díscipulos Teus</option>
+                                <option value="Tesoureiro(a)"> Tesoureiro(a) </option>
+                                <option value="Secretario(a)">Secretário(a)</option>
                                 <option value="Ministro"> Ministro </option>
                                 <option value="Presidente">Presidente</option>
-                                <option value="Presidente de Honra">Presidente de Honra</option>
+                                <option value="Bispo">Bispo</option>
                             </select>
                         </div>
                     
