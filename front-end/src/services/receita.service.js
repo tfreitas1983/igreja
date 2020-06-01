@@ -1,8 +1,8 @@
 import http from "../http-common"
 
 class ReceitaDataService {
-    buscarTodos(page) {
-        return http.get(`/financeiro/receitas?page=${page}`)
+    buscarTodos() {
+        return http.get("/financeiro/receitas")
     }
 
     buscarUm(id) {

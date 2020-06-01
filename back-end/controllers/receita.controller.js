@@ -33,7 +33,7 @@ exports.cadastrar = (req, res) => {
 }
 
 exports.buscarTodos = (req,res) => {
-    const {page = 1} = req.query;
+   
     const descricao = req.query.descricao
     var condition = descricao ? { descricao: { $regex: new RegExp(descricao), $options: "i" } } : {}
 
@@ -44,7 +44,7 @@ exports.buscarTodos = (req,res) => {
         var query = {}
     }
     
-    Receita.paginate(query,{page, limit: 5})
+    Receita.find(condition)
         .then(data => {
             res.send(data)
         })

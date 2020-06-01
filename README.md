@@ -34,7 +34,8 @@ Próximas Etapas:
   - Listar despesas - FEITO 31/05/2020
   - Editar despesa - FEITO 31/05/2020
 - Implementar o contas a receber
-  - Criar receitas
+  - Criar receitas - FEITO 01/06/2020
+  - Listar receitas
 - Implementar o upload múltiplo de arquivos com drag n' drop
 - Implementar relatório de receitas/despesas
 - Implementar os filtros nos relatórios
