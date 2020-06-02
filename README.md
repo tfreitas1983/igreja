@@ -37,6 +37,7 @@ Próximas Etapas:
   - Criar receita - FEITO 01/06/2020
   - Listar receitas - FEITO 01/06/2020
   - Editar receita - FEITO 01/06/2020
+- Autocompletar na busca - FEITO 02/06/2020
 - Implementar o upload múltiplo de arquivos com drag n' drop
 - Implementar relatório de receitas/despesas
 - Implementar os filtros nos relatórios
@@ -45,7 +46,7 @@ Próximas Etapas:
 - Criar permissões por login
 - Criar Dashboard com contadores e gráficos
 - Aniversariante do dia
-- Autocompletar na busca
+
 - Mudar a lista de membros com checkbox para apagar em lote
 - Linha do tempo do membro (consagrações) com confirmação ao mudar o cargo
 - Doações com cartão

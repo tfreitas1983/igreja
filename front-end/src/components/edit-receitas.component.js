@@ -42,11 +42,11 @@ export default class EditReceitas extends Component {
                 tipo: "receita",
                 formapagamento: "",
                 parcelas: "",
-                situacao: "",
-                buscaNome: "",
+                situacao: "",                
                 currentIndex: -1,
-                current: null
+                membro: null
             },
+            buscaNome: "",
             membros: [],
             cat: [],
             showCategoria: false            
@@ -66,7 +66,7 @@ export default class EditReceitas extends Component {
                         id: response.data.id,
                         numrec: response.data.numrec,
                         descricao: response.data.descricao,
-                        valor: response.data.valor,                        
+                        valor: (response.data.valor).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL',}),                        
                         status: response.data.status,
                         dtpagamento: moment(response.data.dtpagamento).format('DD/MM/YYYY'),
                         dtliquidado: moment(response.data.dtliquidacao).format('DD/MM/YYYY'),
@@ -85,36 +85,41 @@ export default class EditReceitas extends Component {
 
     estadoBuscaNome(e) {
         const buscaNome = e.target.value
-
+        this.limpaCurrent()
+        this.buscarNome()
         this.setState({
             buscaNome: buscaNome
         })
+        
     }
 
     
-    buscarNome() {
-        this.limpaCurrent()
+    buscarNome() {        
         MembroDataService.buscarNome(this.state.buscaNome)
             .then(response => {
                 this.setState({
-                    membros: response.data.docs
-                })    
+                    membros: (response.data.docs).map((item) => ( {nome: item.nome} ))
+                })                  
             })
             .catch(e => {
                 console.log(e)
             })
+         
     }
     
     ativaMembro(membro, index) {
-        this.setState({
-            current: membro,
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+            membro: membro.nome,
             currentIndex: index
+            }
         })
-    }
+    )}
 
     limpaCurrent() {
         this.setState({
-            current: null,
+            current: {...this.state.current, membro: null},
             currentIndex: -1
         })
     }
@@ -316,11 +321,11 @@ export default class EditReceitas extends Component {
     }
 
     render () {
-        const {buscaNome, membros, currentIndex, current, cat} = this.state
+        const {membros, current, cat} = this.state
 
          //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
          let pago = null
-         if(current.status === "Pago") {
+         if(current && current.status === "Pago") {
              pago = <div className="form-group">
                          <label> Data pagamento </label>
                              <input type="text" className="form-control" 
@@ -335,7 +340,7 @@ export default class EditReceitas extends Component {
  
          //Verifica se o status é "Liquidado" e reinderiza o campo de data de liquidação
          let liquidado = null
-         if(current.status === "Liquidado") {
+         if( current && current.status === "Liquidado") {
              pago = 
                  <div className="form-group">
                      <label> Data pagamento </label>
@@ -351,14 +356,14 @@ export default class EditReceitas extends Component {
          
          //Verifica se o status não é parcelado para liberar as formas de pagamento
          let selecionado = ""
-         if(current.status !== "Parcelado") {
+         if(current && current.status !== "Parcelado") {
              selecionado = current.formapagamento
          }
          
          //Verifica se o pagamento é parcelado, reinderiza a quantidade de parcelas
          //e escolhe a forma de pagamento "Cartão de Crédito"
          let parcelado = null
-         if(current.status === "Parcelado") { 
+         if(current && current.status === "Parcelado") { 
              selecionado = "Cartão de Crédito"
              parcelado = <div className="form-group">
                              <label> Número de parcelas </label>
@@ -419,15 +424,16 @@ export default class EditReceitas extends Component {
         ))
 
         let mostrar = null
-        if (current && current != null) {
+        if (current.membro) {
             mostrar =  <div className="autocomplete-active">
                 {current.membro}
             </div>
-        } if (current.categoria === 'Dízimo' && current === null) {
+        } 
+        if (this.state.buscaNome && current.membro === null) {            
             mostrar = 
             <div className="list-group">
            { membros && membros.map((membro, index) => (
-                <div className={"list-group-item " + (index === currentIndex ? "active" : "")} 
+                <div className={"list-group-item " + (index === current.currentIndex ? "active" : "")} 
                 onClick={() => this.ativaMembro(membro, index)} 
                 key={index} > 
                     {membro.nome}
@@ -438,7 +444,7 @@ export default class EditReceitas extends Component {
             
         
         let dizimo = null
-        if (current.categoria === 'Dízimo') {
+        if (current && current.categoria === 'Dízimo') {
             dizimo = 
             <div>
                 <div className="form-group">
@@ -446,26 +452,19 @@ export default class EditReceitas extends Component {
                 </div>
                 <div className="actions">
                     <div className="autocomplete">
-                        <input type="text"className="form-control" id="membro" name="membro" value={buscaNome} onChange={this.estadoBuscaNome} /> 
-                    </div>
-                    <div className="form-group">                   
-                        <button onClick={this.buscarNome}>Busca</button>
-                    </div>                    
-                </div>
-                                   
-                    {mostrar}                    
-                
+                        <input type="text"className="form-control" onClick={this.buscarNome} onKeyUp={this.buscarNome} id="membro" name="membro" value={this.state.buscaNome} onChange={this.estadoBuscaNome} /> 
+                    </div>                                       
+                </div>                                   
+                    {mostrar}                                    
             </div>
-        }
-
-    
+        }    
 
         return (
             <div className="list">
                 { current ? (
                     <div className="edit-form">
                         <h2>Editar receita #{current.numrec}</h2>
-                        <form>
+                        <form onSubmit={this.salvarReceber}>
                             <div className="form-group">
                                 <label htmlFor="descricao">Descrição</label>
                                 <input type="text" className="form-control" id="descricao" value={current.descricao} onChange={this.estadoDescricao} />
@@ -473,7 +472,7 @@ export default class EditReceitas extends Component {
 
                             <div className="form-group">
                                 <label htmlFor="valor">Valor</label>
-                                <input type="text" className="form-control" id="valor" value={current.valor.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL',})} onChange={this.estadoValor} />
+                                <input type="text" className="form-control" id="valor" value={current.valor} onChange={this.estadoValor} />
                             </div>
 
                             <div className="form-group">
