@@ -22,6 +22,7 @@ export default class AdicionarReceber extends Component {
         this.pegaCategoria = this.pegaCategoria.bind(this)
         this.salvarCategoria = this.salvarCategoria.bind(this)
         this.estadoBuscaNome = this.estadoBuscaNome.bind(this)
+        this.selecionaPagina = this.selecionaPagina.bind(this)
                 
         this.salvarReceber = this.salvarReceber.bind(this)
         this.novoReceber = this.novoReceber.bind(this)
@@ -40,8 +41,10 @@ export default class AdicionarReceber extends Component {
             parcelas:"",
             buscaNome: "",
             currentMembro: null,
-            currentIndex: -1
-
+            currentIndex: -1,
+            info:{},
+            page: 1,
+            selectedPage: null
         }
     }
 
@@ -127,12 +130,23 @@ export default class AdicionarReceber extends Component {
         })
     }
 
-    buscarNome() {
-        this.limpaCurrent()
-        MembroDataService.buscarNome(this.state.buscaNome)
+    selecionaPagina(e) {
+        const i = e.target.id
+        const selectedPage = e.target.id
+         this.setState({
+            selectedPage: i,
+            page: selectedPage
+        })
+            this.buscarNome(selectedPage)      
+    } 
+
+    buscarNome(page = 1) {
+        MembroDataService.buscarNome(this.state.buscaNome, page)
             .then(response => {
+                const { docs, ...info } = response.data 
                 this.setState({
-                    membros: response.data.docs
+                    membros: response.data.docs,
+                    info: info                                 
                 })    
             })
             .catch(e => {
@@ -260,7 +274,7 @@ export default class AdicionarReceber extends Component {
         
     render() {
 
-        const {cat, buscaNome, membros, currentIndex, currentMembro} = this.state
+        const {cat, buscaNome, membros, currentIndex, currentMembro, info, page} = this.state
 
          //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
          let pago = null
@@ -361,6 +375,22 @@ export default class AdicionarReceber extends Component {
          let catreceitas = filtro.map((categoria, index) => (
             <option value={categoria.categoria} key={index}>{categoria.categoria}</option>
         ))
+
+        //Reinderiza os números das páginas de acordo com o total delas
+        //Deixando selecionado a página corrente no array paginas
+        let i = 0
+        let paginas = []
+        if (this.state.categoria === 'Dízimo') {
+            for ( i = 1; i <= info.pages; i++ ) {
+                paginas.push(
+                    <li className={"page-item " + (page === i ? "active" : "")} key={i}>
+                        <span className="page-link" key={i} id={i} onClick={this.selecionaPagina} >
+                            {i}
+                        </span>
+                    </li>
+                )            
+            } 
+        }
         
         let mostrar = null
         if (currentMembro && currentMembro != null) {
@@ -390,15 +420,19 @@ export default class AdicionarReceber extends Component {
                 </div>
                 <div className="actions">
                     <div className="autocomplete">
-                        <input type="text"className="form-control" id="membro" name="membro" value={buscaNome} onChange={this.estadoBuscaNome} /> 
+                        <input 
+                            type="text"
+                            className="autocomplete" 
+                            id="membro" 
+                            name="membro" 
+                            value={buscaNome} 
+                            onKeyUp={this.buscarNome} 
+                            onClick={this.buscarNome}
+                            onChange={this.estadoBuscaNome}
+                            autoComplete="off" /> 
                     </div>
-                    <div className="form-group">                   
-                        <button onClick={this.buscarNome}>Busca</button>
-                    </div>                    
                 </div>
-                                   
                     {mostrar}                    
-                
             </div>
         }
 
@@ -505,6 +539,11 @@ export default class AdicionarReceber extends Component {
                         <div className="form-group">
                         {dizimo}
                         </div>
+
+                        <ul className="pagination">
+                        { paginas }
+                        </ul>
+
                     </div>
 
                     <div className="actions">                

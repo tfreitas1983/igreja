@@ -443,15 +443,17 @@ export default class EditReceitas extends Component {
         //Deixando selecionado a página corrente no array paginas
         let i = 0
         let paginas = []
-        for ( i = 1; i <= info.pages ; i++ ) {
-            paginas.push(
-                <li className={"page-item " + (page === i ? "active" : "")} key={i}>
-                    <span className="page-link" key={i} id={i} onClick={this.selecionaPagina} >
-                        {i}
-                    </span>
-                </li>
-            )            
-        } 
+        if (current.categoria === 'Dízimo' && current.membro === null) {
+            for ( i = 1; i <= info.pages ; i++ ) {
+                paginas.push(
+                    <li className={"page-item " + (page === i ? "active" : "")} key={i}>
+                        <span className="page-link" key={i} id={i} onClick={this.selecionaPagina} >
+                            {i}
+                        </span>
+                    </li>
+                )            
+            } 
+        }
 
         let mostrar = null
         if (current.membro) {
