@@ -71,7 +71,8 @@ export default class MembrosLista extends Component {
         const i = e.target.id
         const selectedPage = e.target.id
          this.setState({
-            selectedPage: i
+            selectedPage: i,
+            page: selectedPage
         })
         if(!this.state.buscaNome) {
             this.pegaMembros(selectedPage) 
@@ -81,9 +82,7 @@ export default class MembrosLista extends Component {
             this.buscaNome(selectedPage)
         }
         
-    }
-
-   
+    }   
 
     pegaMembros(page = 1) {        
         MembroDataService.buscarTodos(page)
@@ -96,6 +95,20 @@ export default class MembrosLista extends Component {
                     info: info,
                     page: page
                 })                
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }
+
+    buscaNome(page = 1) {
+        MembroDataService.buscarNome(this.state.buscaNome, page)
+            .then(response => {
+                const { docs, ...info } = response.data 
+                this.setState({
+                    membros: response.data.docs,
+                    info: info                                 
+                })    
             })
             .catch(e => {
                 console.log(e)
@@ -122,22 +135,7 @@ export default class MembrosLista extends Component {
             .catch(e => {
                 console.log(e)
             })
-    }
-
-    buscaNome(page = 1) {
-        MembroDataService.buscarNome(page, this.state.buscaNome)
-            .then(response => {
-                const { docs, ...info } = response.data 
-                this.setState({
-                    membros: response.data.docs,
-                    info: info,
-                    page: page               
-                })    
-            })
-            .catch(e => {
-                console.log(e)
-            })
-    }
+    }  
 
     apagaMembro() {
         MembroDataService.apagar(this.state.currentMembro.id)
@@ -206,7 +204,16 @@ export default class MembrosLista extends Component {
             <div>
                 <div className="actions">
                     <div className="autocomplete">
-                        <input type="text"className="autocomplete" placeholder={"Digite o nome do membro"} onClick={this.buscaNome} onKeyUp={this.buscaNome} id="membro" name="membro" value={this.state.buscaNome} onChange={this.estadoBuscaNome} /> 
+                        <input 
+                        type="text"
+                        className="autocomplete" 
+                        placeholder={"Digite o nome do membro"} 
+                        onClick={this.buscaNome} 
+                        onKeyUp={this.buscaNome} 
+                        id="membro" 
+                        name="membro" 
+                        value={this.state.buscaNome} 
+                        onChange={this.estadoBuscaNome} /> 
                     </div>                                       
                 </div>                                   
                     {mostrar}                                    

@@ -25,8 +25,8 @@ class MembroDataService {
         return http.delete(`/membros`)
     }
 
-    buscarNome(page, nome) {
-        return http.get(`/membros?page=${page}&nome=${nome}`)
+    buscarNome(nome, page) {
+        return http.get(`/membros?nome=${nome}&page=${page}`)
     }
 
   cadastrarImagem(file) {
