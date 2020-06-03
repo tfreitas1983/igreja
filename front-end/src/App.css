@@ -87,7 +87,7 @@ right: 0.5%;
   margin: 2px 0;
   border-radius: 10px;
   text-align: center;
-  font-size: 18px;
+  font-size: 18px; 
 }
 
 .autocomplete-items-active a{
@@ -172,7 +172,9 @@ img {
 }
 
 .pagination {
+  position: relative;
   text-decoration: none;
+  margin: auto;
 }
 
 #file {

@@ -18,7 +18,7 @@ export default class EditReceitas extends Component {
 
         this.estadoTipo = this.estadoTipo.bind(this)
         this.estadoStatus = this.estadoStatus.bind(this)        
-
+        this.selecionaPagina = this.selecionaPagina.bind(this)
 
         this.buscarNome = this.buscarNome.bind(this)
         this.pegaCategoria = this.pegaCategoria.bind(this)
@@ -48,6 +48,9 @@ export default class EditReceitas extends Component {
             },
             buscaNome: "",
             membros: [],
+            info: {},
+            selectedPage: null,
+            page: 1,
             cat: [],
             showCategoria: false            
         }        
@@ -55,7 +58,8 @@ export default class EditReceitas extends Component {
 
     componentDidMount() {
         this.buscaReceita(this.props.match.params.id) 
-        this.pegaCategoria()   
+        this.pegaCategoria() 
+        this.buscarNome()  
     }
 
     buscaReceita(id) {
@@ -93,12 +97,24 @@ export default class EditReceitas extends Component {
         
     }
 
+    selecionaPagina(e) {
+        const i = e.target.id
+        const selectedPage = e.target.id
+         this.setState({
+            selectedPage: i,
+            page: selectedPage
+        })       
+        this.buscarNome(selectedPage)        
+    } 
+
     
-    buscarNome() {        
-        MembroDataService.buscarNome(this.state.buscaNome)
+    buscarNome(page = 1) {        
+        MembroDataService.buscarNome(this.state.buscaNome, page)
             .then(response => {
+                const {docs, ...info} = response.data
                 this.setState({
-                    membros: (response.data.docs).map((item) => ( {nome: item.nome} ))
+                    membros: (response.data.docs).map((item) => ( {nome: item.nome} )),
+                    info: info
                 })                  
             })
             .catch(e => {
@@ -321,7 +337,7 @@ export default class EditReceitas extends Component {
     }
 
     render () {
-        const {membros, current, cat} = this.state
+        const {membros, current, info, page, cat} = this.state
 
          //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
          let pago = null
@@ -423,6 +439,20 @@ export default class EditReceitas extends Component {
             <option value={categoria.categoria} key={index}>{categoria.categoria}</option>
         ))
 
+        //Reinderiza os números das páginas de acordo com o total delas
+        //Deixando selecionado a página corrente no array paginas
+        let i = 0
+        let paginas = []
+        for ( i = 1; i <= info.pages ; i++ ) {
+            paginas.push(
+                <li className={"page-item " + (page === i ? "active" : "")} key={i}>
+                    <span className="page-link" key={i} id={i} onClick={this.selecionaPagina} >
+                        {i}
+                    </span>
+                </li>
+            )            
+        } 
+
         let mostrar = null
         if (current.membro) {
             mostrar =  <div className="autocomplete-items-active">
@@ -452,10 +482,24 @@ export default class EditReceitas extends Component {
                 </div>
                 <div className="actions">
                     <div className="autocomplete">
-                        <input type="text"className="form-control" onClick={this.buscarNome} onKeyUp={this.buscarNome} id="membro" name="membro" value={this.state.buscaNome} onChange={this.estadoBuscaNome} /> 
+                        <input 
+                        type="text"
+                        className="autocomplete" 
+                        placeholder={"Digite o nome do membro"} 
+                        onClick={this.buscarNome} 
+                        onKeyUp={this.buscarNome} 
+                        id="membro" name="membro" 
+                        value={this.state.buscaNome} 
+                        onChange={this.estadoBuscaNome}
+                        autocomplete="off"  /> 
                     </div>                                       
                 </div>                                   
-                    {mostrar}                                    
+                    {mostrar}
+                    <div className="actions">
+                        <ul className="pagination">
+                            { paginas }
+                        </ul>                    
+                    </div>                
             </div>
         }    
 

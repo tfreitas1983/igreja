@@ -213,7 +213,8 @@ export default class MembrosLista extends Component {
                         id="membro" 
                         name="membro" 
                         value={this.state.buscaNome} 
-                        onChange={this.estadoBuscaNome} /> 
+                        onChange={this.estadoBuscaNome}
+                        autocomplete="off" /> 
                     </div>                                       
                 </div>                                   
                     {mostrar}                                    
