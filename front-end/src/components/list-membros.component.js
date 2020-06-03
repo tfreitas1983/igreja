@@ -33,6 +33,15 @@ export default class MembrosLista extends Component {
         this.pegaMembros()        
     }
 
+    estadoBuscaNome(e) {
+        const buscaNome = e.target.value
+        this.buscaNome()
+        this.limpaCurrent()
+        this.setState({
+            buscaNome: buscaNome
+        })
+    }
+
     limpaCurrent() {
         this.setState({
             currentMembro: null,
@@ -64,17 +73,17 @@ export default class MembrosLista extends Component {
          this.setState({
             selectedPage: i
         })
-        this.pegaMembros(selectedPage) 
-        this.limpaCurrent()        
+        if(!this.state.buscaNome) {
+            this.pegaMembros(selectedPage) 
+            this.limpaCurrent()        
+        }
+        if (this.state.buscaNome) {
+            this.buscaNome(selectedPage)
+        }
+        
     }
 
-    estadoBuscaNome(e) {
-        const buscaNome = e.target.value
-
-        this.setState({
-            buscaNome: buscaNome
-        })
-    }
+   
 
     pegaMembros(page = 1) {        
         MembroDataService.buscarTodos(page)
@@ -115,11 +124,14 @@ export default class MembrosLista extends Component {
             })
     }
 
-    buscaNome() {
-        MembroDataService.buscarNome(this.state.buscaNome)
+    buscaNome(page = 1) {
+        MembroDataService.buscarNome(page, this.state.buscaNome)
             .then(response => {
+                const { docs, ...info } = response.data 
                 this.setState({
-                    membros: response.data.docs
+                    membros: response.data.docs,
+                    info: info,
+                    page: page               
                 })    
             })
             .catch(e => {
@@ -166,46 +178,47 @@ export default class MembrosLista extends Component {
                 </li>
             )            
         } 
-                  
+                
+        let mostrar = null
+        if (currentMembro !== null) {
+            mostrar =  <div className="autocomplete-items-active">
+                {currentMembro.nome}
+                {<Link to={`/membros/${currentMembro.id}`} id="editar" className="autocomplete-items">Editar</Link>}
+            </div>
+        } 
+        if (currentMembro === null || buscaNome === '') {            
+            mostrar = 
+            <div className="list-group">
+           { membros && membros.map((membro, index) => (
+                <div className={"autocomplete-items" + (index === currentIndex ? "-active" : "")} 
+                onClick={() => this.ativaMembro(membro, index)} 
+                key={index} > 
+                    {membro.nome}
+                    {<Link to={`/membros/${membro.id}`} id="editar" className="autocomplete-items">Editar</Link>}
+                </div>
+            ))}
+            </div>
+        }
        
+        let autocomplete = null
+        if (membros) {
+            autocomplete = 
+            <div>
+                <div className="actions">
+                    <div className="autocomplete">
+                        <input type="text"className="autocomplete" placeholder={"Digite o nome do membro"} onClick={this.buscaNome} onKeyUp={this.buscaNome} id="membro" name="membro" value={this.state.buscaNome} onChange={this.estadoBuscaNome} /> 
+                    </div>                                       
+                </div>                                   
+                    {mostrar}                                    
+            </div>
+        }   
 
         return (
             <div className="list row">
 
-                <div className="col-md-8">
-                    
-                    <div className="input-group mb-3">
-                        <input 
-                            type="text" 
-                            className="form-control" 
-                            placeholder="Busque pelo nome" 
-                            value={buscaNome} 
-                            onChange={this.estadoBuscaNome} />
-                        
-                        <div className="input-group-append">
-                            <button 
-                                className="btn btn-outline-secondary" 
-                                type="button" 
-                                onClick={this.buscaNome}>
-                                    Buscar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <div className="col-md-6">
                     <h4>Lista de membros</h4>
- 
-                    <ul className="list-group">
-                        {membros && membros.map((membro, index) => (
-                            <li 
-                                className={"list-group-item " + (index === currentIndex ? "active" : "")} 
-                                onClick={() => this.ativaMembro(membro, index)} 
-                                key={index} >  {membro.nome}{" "}
-                                    {<Link to={`/membros/${membro.id}`} id="editar" className="badge badge-warning">Editar</Link>}
-                            </li>
-                        )) }
-                    </ul>
+                    {autocomplete}
 
                     <div className="actions">
                         <button disabled={page === 1} onClick={this.prevPage}>

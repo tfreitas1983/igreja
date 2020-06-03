@@ -425,7 +425,7 @@ export default class EditReceitas extends Component {
 
         let mostrar = null
         if (current.membro) {
-            mostrar =  <div className="autocomplete-active">
+            mostrar =  <div className="autocomplete-items-active">
                 {current.membro}
             </div>
         } 
@@ -433,7 +433,7 @@ export default class EditReceitas extends Component {
             mostrar = 
             <div className="list-group">
            { membros && membros.map((membro, index) => (
-                <div className={"list-group-item " + (index === current.currentIndex ? "active" : "")} 
+                <div className={"autocomplete-items" + (index === current.currentIndex ? "-active" : "")} 
                 onClick={() => this.ativaMembro(membro, index)} 
                 key={index} > 
                     {membro.nome}
