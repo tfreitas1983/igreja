@@ -65,7 +65,8 @@ export default class Membro extends Component {
     estadoUpload(e) {
    
 
-        //Verifica se o usuário escolheu e depois cancelou a escolha do arquivo. Assim a imagem volta a ser a padrão
+        //Verifica se o usuário escolheu e depois cancelou a escolha do arquivo. 
+        //Assim a imagem volta a ser a padrão
         if(!e.target.files[0]){
             const imagem = {name: "default.jpg", type: "image/jpeg"}
             const foto = "default.jpg"

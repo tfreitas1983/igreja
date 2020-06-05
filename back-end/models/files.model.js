@@ -1,7 +1,8 @@
 module.exports = mongoose => {
     var schemaFiles = mongoose.Schema ({
         original: String,
-        foto: String
+        foto: String,              
+        size: Number        
     },
         { timestamps: true }
     )

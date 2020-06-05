@@ -99,7 +99,7 @@ export default class DespesasLista extends Component {
                                     <td key={index+8}>{despesa.fornecedor}</td>
                                     <td key={index+9}>{despesa.status}</td>
                                     <td key={index+'a'}>{despesa.situacao ? 'Ativo' : 'Inativo'}</td>
-                                    <td>{<Link to={`/financeiro/despesas/${despesa.id}`} id="editar" className="badge badge-warning">Editar</Link>}</td>
+                                    <td>{<Link to={`/financeiro/despesas/${despesa.id}`} id="editar" className="acoes" id="acoes">Editar</Link>}</td>
                                 </tr>
                                 ))}
                             </tbody>

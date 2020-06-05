@@ -106,6 +106,14 @@ right: 0.5%;
   border-radius: 5px;
 }
 
+#acoes {
+  color: #2b313b;
+  background-color: #4ca1a1;
+  border-radius: 15px;
+  padding: 10px;
+  text-decoration: none;
+}
+
 .dropdown li{
   float: left;  
 }

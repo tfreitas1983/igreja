@@ -29,9 +29,13 @@ class MembroDataService {
         return http.get(`/membros?nome=${nome}&page=${page}`)
     }
 
-  cadastrarImagem(file) {
+    cadastrarImagem(file) {
         return http.post("/membros/files", file)
     } 
+
+    buscarArquivo(id) {
+        return http.get(`/membros/files/${id}`)
+    }
 }
 
 export default new MembroDataService()

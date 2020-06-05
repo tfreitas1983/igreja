@@ -66,7 +66,7 @@ export default class ReceitasLista extends Component {
                 <h1>Receitas</h1>
                 <Link to={"/financeiro/receitas/adicionar"} className="btn btn-info">Cadastrar</Link>
                 <div className="row">
-                    <div className="col-8">
+                    <div className="col-12">
                         <table>
                             <thead>
                                 <tr>
@@ -95,7 +95,7 @@ export default class ReceitasLista extends Component {
                                     <td key={index+8}>{receita.membro}</td>
                                     <td key={index+9}>{receita.status}</td>
                                     <td key={index+'a'}>{receita.situacao ? 'Ativo' : 'Inativo'}</td>
-                                    <td>{<Link to={`/financeiro/receitas/${receita.id}`} id="editar" className="badge badge-warning">Editar</Link>}</td>
+                                    <td>{<Link to={`/financeiro/receitas/${receita.id}`} id="editar" className="acoes" id="acoes">Editar</Link>}</td>
                                 </tr>
                                 ))}
                             </tbody>

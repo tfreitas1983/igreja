@@ -152,9 +152,9 @@ exports.buscarAtivos = (req, res) => {
 }
 
 exports.buscarImagem = (req, res) => {
-    const filename = req.params.foto
-    Membro.find(filename)
-  
+    const id = req.params.id
+
+    Files.findById(id)   
         .then(data => {
             res.send(data)
         })
@@ -167,7 +167,7 @@ exports.buscarImagem = (req, res) => {
 
 
 exports.cadastrarImagem = (req, res) => {
-    const { originalname: original, filename: foto } = req.file
+    const { originalname: original, filename: foto, size } = req.file
     if (!foto) {
         res.status(400).send({ message: "A imagem deve ser enviada"})
         return
@@ -175,7 +175,8 @@ exports.cadastrarImagem = (req, res) => {
 
     const file = new Files ({
        original,
-       foto
+       foto,
+       size
     })
     file    
         .save(file)

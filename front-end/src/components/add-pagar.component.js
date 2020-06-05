@@ -2,7 +2,17 @@ import React, { Component } from 'react'
 import DespesaDataService from "../services/despesa.service"
 import FornecedorDataService from "../services/fornecedor.service"
 import CategoriaDataService from "../services/categoria.service"
+import MembroDataService from "../services/membro.service"
 import moment from 'moment'
+import { uniqueId } from "lodash";
+import filesize from "filesize";
+import http from "../http-common"
+
+import GlobalStyle from "../styles/global";
+import { Container, Content } from "./styles";
+
+import Upload from "./Upload";
+import FileList from "./FileList"
 
 export default class AdicionarPagar extends Component {
     constructor(props) {
@@ -47,7 +57,8 @@ export default class AdicionarPagar extends Component {
             status: "",
             situacao: "",
             showFornecedor: false,
-            showCategoria: false
+            showCategoria: false,
+            uploadedFiles: []
             
         }
     }
@@ -55,7 +66,102 @@ export default class AdicionarPagar extends Component {
     componentDidMount() {
         this.pegaCategoria()
         this.pegaFornecedor()
+        
     }
+
+    pegaArquivos() {
+        MembroDataService.buscarArquivo()
+            .then(response => {
+                const uploadedFiles = response.data
+                this.setState({
+                    uploadedFiles: response.data.map(file => ({
+                        id: file._id,
+                        name: file.foto,
+                        readableSize: filesize(file.size),
+                        preview: file.foto, //Verificar depois sobre o URL
+                        uploaded: true,
+                        url: file.URL.createObjectURL(uploadedFiles) //Verificar depois URL.createObjectURL(imagem)
+                    }))
+                })
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }
+
+    handleUpload = files => {
+        const uploadedFiles = files.map(file => ({
+          file,
+          id: uniqueId(),
+          name: file.name,
+          readableSize: filesize(file.size),
+          preview: URL.createObjectURL(file),
+          progress: 0,
+          uploaded: false,
+          error: false,
+          url: null
+        }))
+    
+        this.setState({
+          uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)
+        })
+    
+        uploadedFiles.forEach(this.processUpload)
+      }
+
+      updateFile = (id, data) => {
+        this.setState({
+          uploadedFiles: this.state.uploadedFiles.map(uploadedFile => {
+            return id === uploadedFile.id
+              ? { ...uploadedFile, ...data }
+              : uploadedFile;
+          })
+        })
+      }
+
+      processUpload = uploadedFile => {
+        const data = new FormData();
+    
+        data.append("file", uploadedFile.file, uploadedFile.name);
+    
+       
+        http                            
+          .post("/membros/files", data, {
+            onUploadProgress: e => {
+              const progress = parseInt(Math.round((e.loaded * 100) / e.total));
+    
+              this.updateFile(uploadedFile.id, {
+                progress
+              })
+            }
+          })
+          .then(response => {
+            this.updateFile(uploadedFile.id, {
+              uploaded: true,
+              id: response.data._id,
+              url: response.data.url
+            });
+          })
+          .catch(() => {
+            this.updateFile(uploadedFile.id, {
+              error: true
+            })
+          })
+      }
+
+      handleDelete = async id => {
+        await http.delete(`/membros/files/${id}`);
+    
+        this.setState({
+          uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id)
+        })
+      }
+    
+      componentWillUnmount() {
+        this.state.uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview));
+      }
+
+
 
     estadoDescricao(e){
         const descricao = e.target.value
@@ -298,7 +404,8 @@ export default class AdicionarPagar extends Component {
         
     render() {
 
-        const {cat, empresas} = this.state
+        const {cat, empresas, uploadedFiles } = this.state
+       
 
         //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
         let pago = null
@@ -441,7 +548,7 @@ export default class AdicionarPagar extends Component {
                     </div>
                 </div>
         } 
-
+        
         return (
             <div className="submit-form">
                 { this.state.submitted ? (
@@ -576,6 +683,18 @@ export default class AdicionarPagar extends Component {
                                 {modalFornecedor}
                             </div>
                         </div>
+
+                        
+                        <Container>
+                            <Content>
+                            <Upload onUpload={this.handleUpload} />
+                            {!!uploadedFiles.length && (
+                                <FileList files={uploadedFiles} onDelete={this.handleDelete} />
+                            )}
+                            </Content>
+                            <GlobalStyle />
+                        </Container>
+ 
 
                         <div className="actions">                
                             <button onClick={this.salvarPagar}>

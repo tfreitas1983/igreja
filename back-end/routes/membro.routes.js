@@ -5,12 +5,15 @@ module.exports = app => {
     const receitas = require ('../controllers/receita.controller')
     const categorias = require ('../controllers/categoria.controller')
     const fornecedores = require ('../controllers/fornecedor.controller')
+    const files = require ('../controllers/file.controller')
     import { Router } from 'express'
     import multer from 'multer'
     import multerConfig  from '../config/multer'
+    const multerFile = require ('../config/multerfile')
     
     var router =  new Router()
     const upload = multer(multerConfig)
+    const uploadFile = multer(multerFile)
 
     router.post("/membros", membros.cadastrar)
     router.get("/membros", membros.buscarTodos)
@@ -21,8 +24,8 @@ module.exports = app => {
     router.put("/membros/:id", membros.editar)
     router.delete("/membros/:id", membros.apagar)
     router.delete("/membros", membros.apagarTodos)
-    router.post("/membros/files", upload.single('file'), membros.cadastrarImagem)
-    router.get("/files/:id", membros.buscarImagem)
+    router.post("/membros/files", upload.single('file'), membros.cadastrarImagem)    
+    router.get("/membros/files/:id", membros.buscarImagem)
     router.post("/templo", templo.cadastrar)
     router.post("/financeiro/despesas", despesas.cadastrar)
     router.get("/financeiro/despesas", despesas.buscarTodos)

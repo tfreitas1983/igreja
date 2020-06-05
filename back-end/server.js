@@ -17,6 +17,7 @@ const db = require('./models')
 db.mongoose
     .connect(db.url, {
         useNewUrlParser: true,
+        useCreateIndex: true,
         useUnifiedTopology: true
     })
     .then(() => {
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/files", express.static(path.resolve('..', 'front-end', 'src', 'images')))
+app.get("/uploads", express.static(path.resolve('..', 'front-end', 'src', 'uploads')))
 
 require("./routes/membro.routes")(app)
 
