@@ -261,7 +261,7 @@ export default class AdicionarPagar extends Component {
     pegaFornecedor() {
         FornecedorDataService.buscarTodos()
             .then(response => {
-                const empresas = response.data
+                //const empresas = response.data
                 this.setState({
                     empresas: response.data
                 })
@@ -274,7 +274,7 @@ export default class AdicionarPagar extends Component {
     pegaCategoria(){
         CategoriaDataService.buscarTodos()
             .then(response => {
-                const cat = response.data
+               // const cat = response.data
                 this.setState({
                     cat: response.data
                 })
@@ -412,7 +412,7 @@ export default class AdicionarPagar extends Component {
         
     render() {
 
-        const {cat, empresas, uploadedFiles } = this.state
+        const {empresas, uploadedFiles } = this.state
        
 
         //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento

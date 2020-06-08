@@ -39,17 +39,17 @@ export default class EditDespesas extends Component {
                 dtpagamento: moment(),
                 dtpagamentonovo: "",
                 dtliquidado: moment(),
-                dtliquidadonovo: "",
-                empresas: [],
+                dtliquidadonovo: "",                
                 razao: "",
-                cnpj: "",
-                cat: [],
+                cnpj: "",                
                 categoria: "",
                 tipo: "despesa",
                 formapagamento: "",
                 parcelas: "",
                 situacao: ""
             },
+            empresas: [],
+            cat: [],
             showCategoria: false,
             showFornecedor: false
         }        
@@ -108,7 +108,7 @@ export default class EditDespesas extends Component {
     }
 
     estadoVencimento(e) {
-        const vencimento = e.target.value
+       // const vencimento = e.target.value
         const vencimentonovo = e.target.value
         this.setState(prevState => ({
             current: {
@@ -129,7 +129,7 @@ export default class EditDespesas extends Component {
     }
 
     estadoPagamento(e) {
-        const dtpagamento = e.target.value
+       // const dtpagamento = e.target.value
         const dtpagamentonovo = e.target.value
         this.setState(prevState => ({
             current: {
@@ -140,7 +140,7 @@ export default class EditDespesas extends Component {
     }
 
     estadoDataLiquidado(e) {
-        const dtliquidado = e.target.value
+       // const dtliquidado = e.target.value
         const dtliquidadonovo = e.target.value
         this.setState(prevState => ({
             current: {
@@ -217,7 +217,7 @@ export default class EditDespesas extends Component {
     pegaFornecedor() {
         FornecedorDataService.buscarTodos()
             .then(response => {
-                const empresas = response.data
+              //  const empresas = response.data
                 this.setState({
                     empresas: response.data
                 })
@@ -230,7 +230,7 @@ export default class EditDespesas extends Component {
     pegaCategoria(){
         CategoriaDataService.buscarTodos()
             .then(response => {
-                const cat = response.data
+                //const cat = response.data
                 this.setState({
                     cat: response.data
                 })
@@ -371,7 +371,7 @@ export default class EditDespesas extends Component {
 
     render(){
 
-        const {current, cat, empresas} = this.state
+        const {current, empresas} = this.state
         
         
         

@@ -165,7 +165,7 @@ export default class AdicionarReceber extends Component {
     pegaCategoria(){
         CategoriaDataService.buscarTodos()
             .then(response => {
-                const cat = response.data
+               // const cat = response.data
                 this.setState({
                     cat: response.data
                 })
@@ -274,7 +274,7 @@ export default class AdicionarReceber extends Component {
         
     render() {
 
-        const {cat, buscaNome, membros, currentIndex, currentMembro, info, page} = this.state
+        const {buscaNome, membros, currentIndex, currentMembro, info, page} = this.state
 
          //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
          let pago = null

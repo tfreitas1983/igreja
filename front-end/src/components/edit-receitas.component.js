@@ -171,7 +171,7 @@ export default class EditReceitas extends Component {
     }
 
     estadoPagamento(e) {
-        const dtpagamento = e.target.value
+       // const dtpagamento = e.target.value
         const dtpagamentonovo = e.target.value
         this.setState(prevState => ({
             current: {
@@ -182,7 +182,7 @@ export default class EditReceitas extends Component {
     }
 
     estadoDataLiquidado(e) {
-        const dtliquidado = e.target.value
+       // const dtliquidado = e.target.value
         const dtliquidadonovo = e.target.value
         this.setState(prevState => ({
             current: {
@@ -235,7 +235,7 @@ export default class EditReceitas extends Component {
     pegaCategoria(){
         CategoriaDataService.buscarTodos()
             .then(response => {
-                const cat = response.data
+              //  const cat = response.data
                 this.setState({
                     cat: response.data
                 })
@@ -337,7 +337,7 @@ export default class EditReceitas extends Component {
     }
 
     render () {
-        const {membros, current, info, page, cat} = this.state
+        const {membros, current, info, page} = this.state
 
          //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
          let pago = null
@@ -493,7 +493,7 @@ export default class EditReceitas extends Component {
                         id="membro" name="membro" 
                         value={this.state.buscaNome} 
                         onChange={this.estadoBuscaNome}
-                        autocomplete="off"  /> 
+                        autoComplete="off"  /> 
                     </div>                                       
                 </div>                                   
                     {mostrar}
