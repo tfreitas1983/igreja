@@ -13,6 +13,7 @@ module.exports = mongoose => {
         formapagamento: String,
         status: String,
         parcelas: String,
+        arquivos: { type: [String], index: true } ,
         situacao: Boolean        
     },
         { timestamps: true }

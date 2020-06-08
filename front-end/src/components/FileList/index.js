@@ -7,7 +7,7 @@ import { Container, FileInfo, Preview } from "./styles";
 const FileList = ({ files, onDelete }) => (
   <Container>
     {files.map(uploadedFile => (
-      <li key={uploadedFile.id}>
+      <li key={uploadedFile.name}>
         <FileInfo>
           <Preview src={uploadedFile.preview} />
           <div>
@@ -41,6 +41,7 @@ const FileList = ({ files, onDelete }) => (
               href={uploadedFile.url}
               target="_blank"
               rel="noopener noreferrer"
+              key={uploadedFile.id}
             >
               <MdLink style={{ marginRight: 8 }} size={24} color="#222" />
             </a>

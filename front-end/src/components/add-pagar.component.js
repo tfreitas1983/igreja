@@ -14,6 +14,8 @@ import { Container, Content } from "./styles";
 import Upload from "./Upload";
 import FileList from "./FileList"
 
+
+
 export default class AdicionarPagar extends Component {
     constructor(props) {
         super(props)
@@ -58,7 +60,9 @@ export default class AdicionarPagar extends Component {
             situacao: "",
             showFornecedor: false,
             showCategoria: false,
-            uploadedFiles: []
+            uploadedFiles: [],
+            arquivos: []
+            
             
         }
     }
@@ -103,7 +107,7 @@ export default class AdicionarPagar extends Component {
         }))
     
         this.setState({
-          uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)
+          uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)          
         })
     
         uploadedFiles.forEach(this.processUpload)
@@ -139,7 +143,8 @@ export default class AdicionarPagar extends Component {
             this.updateFile(uploadedFile.id, {
               uploaded: true,
               id: response.data._id,
-              url: response.data.url
+              url: response.data.url,
+              foto: response.data.foto
             });
           })
           .catch(() => {
@@ -335,7 +340,8 @@ export default class AdicionarPagar extends Component {
             formapagamento: this.state.formapagamento,
             fornecedor: this.state.razao,
             categoria: this.state.categoria,
-            parcelas: this.state.parcelas            
+            parcelas: this.state.parcelas,
+            arquivos: (this.state.uploadedFiles).map((item) => {return item.foto})
         }
 
         DespesaDataService.cadastrar(data) 
@@ -352,8 +358,10 @@ export default class AdicionarPagar extends Component {
                     fornecedor: response.data.fornecedor,
                     categoria: response.data.categoria,
                     parcelas: response.data.parcelas,
+                    arquivos: response.data.arquivos,
                     status: response.data.status,
                     situacao: response.data.situacao,
+                    
                     submitted: true
                 })                
             })
@@ -687,10 +695,10 @@ export default class AdicionarPagar extends Component {
                         
                         <Container>
                             <Content>
-                            <Upload onUpload={this.handleUpload} />
-                            {!!uploadedFiles.length && (
-                                <FileList files={uploadedFiles} onDelete={this.handleDelete} />
-                            )}
+                                <Upload onUpload={this.handleUpload} />
+                                {!!uploadedFiles.length && (
+                                    <FileList files={uploadedFiles} onDelete={this.handleDelete} />
+                                )}
                             </Content>
                             <GlobalStyle />
                         </Container>

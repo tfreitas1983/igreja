@@ -17,6 +17,7 @@ exports.cadastrar = (req, res) => {
         status: req.body.status,
         formapagamento:req.body.formapagamento,
         parcelas:req.body.parcelas,
+        arquivos: req.body.arquivos,
         situacao: req.body.situacao ? req.body.situacao: true        
     })
 
