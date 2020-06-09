@@ -399,19 +399,19 @@ export default class Membro extends Component {
         const { currentMembro } = this.state
 
 
-        //Monta um array com os nomes dos arquivos
+        //Monta um array com os nomes dos arquivos da pasta imagens
         const importAll = require =>
           require.keys().reduce((acc, next) => {
             acc[next.replace("./", "")] = require(next);
             return acc;
-          }, {});
+          }, {})
 
         // Constante que pega todas as imagens da pasta images
         const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))
         
         
         //Modifica o <img src=""> no JSX caso seja o preview da imagem ou a imagem da pasta
-        let $imagePreview = null;
+        let $imagePreview = null
         if (this.state.url && currentMembro.foto !== "default.jpg") {
             $imagePreview = <img alt="" src={this.state.url} />
         } if((currentMembro.foto.length > 30 || currentMembro.foto === "default.jpg") && !this.state.url) {
@@ -547,14 +547,14 @@ export default class Membro extends Component {
                                 value={currentMembro.cargo}
                                 onChange={this.estadoSelectCargo}>
                                 <option value="Membro">Membro</option>
-                                <option value="Estrela">Estrela</option>  
+                                <option value="Padre/Pastor">Padre/Pastor</option>  
                                 <option value="Obreiro(a)">Obreiro(a)</option> 
                                 <option value="Diácono/Diaconisa"> Diácono/Diaconisa </option>
-                                <option value="Renascer"> Renascer </option>
-                                <option value="Díscipulos Teus">Díscipulos Teus</option>
+                                <option value="Tesoureiro(a)"> Tesoureiro(a) </option>
+                                <option value="Secretario(a)">Secretário(a)</option>
                                 <option value="Ministro"> Ministro </option>
                                 <option value="Presidente">Presidente</option>
-                                <option value="Presidente de Honra">Presidente de Honra</option>
+                                <option value="Bispo">Bispo</option>
                                 
                             </select>
                                 

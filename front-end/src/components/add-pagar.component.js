@@ -4,14 +4,14 @@ import FornecedorDataService from "../services/fornecedor.service"
 import CategoriaDataService from "../services/categoria.service"
 import MembroDataService from "../services/membro.service"
 import moment from 'moment'
-import { uniqueId } from "lodash";
-import filesize from "filesize";
+import { uniqueId } from "lodash"
+import filesize from "filesize"
 import http from "../http-common"
 
-import GlobalStyle from "../styles/global";
-import { Container, Content } from "./styles";
+import GlobalStyle from "../styles/global"
+import { Container, Content } from "./styles"
 
-import Upload from "./Upload";
+import Upload from "./Upload"
 import FileList from "./FileList"
 
 
@@ -116,23 +116,21 @@ export default class AdicionarPagar extends Component {
       updateFile = (id, data) => {
         this.setState({
           uploadedFiles: this.state.uploadedFiles.map(uploadedFile => {
-            return id === uploadedFile.id
-              ? { ...uploadedFile, ...data }
-              : uploadedFile;
+            return id === uploadedFile.id ? { ...uploadedFile, ...data } : uploadedFile
           })
         })
       }
 
       processUpload = uploadedFile => {
-        const data = new FormData();
+        const data = new FormData()
     
-        data.append("file", uploadedFile.file, uploadedFile.name);
+        data.append("file", uploadedFile.file, uploadedFile.name)
     
        
         http                            
           .post("/membros/files", data, {
             onUploadProgress: e => {
-              const progress = parseInt(Math.round((e.loaded * 100) / e.total));
+              const progress = parseInt(Math.round((e.loaded * 100) / e.total))
     
               this.updateFile(uploadedFile.id, {
                 progress
@@ -145,7 +143,7 @@ export default class AdicionarPagar extends Component {
               id: response.data._id,
               url: response.data.url,
               foto: response.data.foto
-            });
+            })
           })
           .catch(() => {
             this.updateFile(uploadedFile.id, {
@@ -155,7 +153,7 @@ export default class AdicionarPagar extends Component {
       }
 
       handleDelete = async id => {
-        await http.delete(`/membros/files/${id}`);
+        await http.delete(`/membros/files/${id}`)
     
         this.setState({
           uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id)
@@ -163,7 +161,7 @@ export default class AdicionarPagar extends Component {
       }
     
       componentWillUnmount() {
-        this.state.uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview));
+        this.state.uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview))
       }
 
 
@@ -556,6 +554,8 @@ export default class AdicionarPagar extends Component {
                     </div>
                 </div>
         } 
+
+        
         
         return (
             <div className="submit-form">

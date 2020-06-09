@@ -1,8 +1,19 @@
 import React, { Component } from 'react'
 import DespesaDataService from "../services/despesa.service"
+import MembroDataService from "../services/membro.service"
 import FornecedorDataService from "../services/fornecedor.service"
 import CategoriaDataService from "../services/categoria.service"
 import moment from 'moment'
+
+import { uniqueId } from "lodash";
+import filesize from "filesize";
+import http from "../http-common"
+
+import GlobalStyle from "../styles/global";
+import { Container, Content } from "./styles";
+
+import Upload from "./Upload";
+import FileList from "./FileList"
 
 export default class EditDespesas extends Component {
     constructor(props) {
@@ -46,8 +57,10 @@ export default class EditDespesas extends Component {
                 tipo: "despesa",
                 formapagamento: "",
                 parcelas: "",
+                arquivos: [],
                 situacao: ""
             },
+            uploadedFiles: [],
             empresas: [],
             cat: [],
             showCategoria: false,
@@ -78,6 +91,7 @@ export default class EditDespesas extends Component {
                         fornecedor: response.data.fornecedor,
                         categoria: response.data.categoria,
                         parcelas: response.data.parcelas,
+                        arquivos: (response.data.arquivos).map((item) => {return item}),
                         situacao: response.data.situacao
                     }
                 })
@@ -85,6 +99,26 @@ export default class EditDespesas extends Component {
             .catch(e => {
                 console.log(e)
             })  
+    }
+
+    pegaArquivos() {
+        MembroDataService.buscarArquivo()
+            .then(response => {
+                const uploadedFiles = response.data
+                this.setState({
+                    uploadedFiles: response.data.map(file => ({
+                        id: file._id,
+                        name: file.foto,
+                        readableSize: filesize(file.size),
+                        preview: file.foto, //Verificar depois sobre o URL
+                        uploaded: true,
+                        url: file.URL.createObjectURL(uploadedFiles) //Verificar depois URL.createObjectURL(imagem)
+                    }))
+                })
+            })
+            .catch(e => {
+                console.log(e)
+            })
     }
 
     estadoDescricao(e) {
@@ -517,6 +551,24 @@ export default class EditDespesas extends Component {
                 </div>
         } 
 
+        //Monta um array com os nomes dos arquivos da pasta imagens
+        const importAll = require =>
+          require.keys().reduce((acc, next) => {
+            acc[next.replace("./", "")] = require(next);
+            return acc;
+          }, {});
+
+        // Constante que pega todas as imagens da pasta images
+        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))
+        
+        //Modifica o <img src=""> no JSX com as imagens da pasta ligadas à despesa
+        let $image = []
+        let i = 0
+        if (current.arquivos) {
+            for (i = 0; i <= current.arquivos.length; i++) {
+                $image.push ( <img alt="" key={i} src={images[current.arquivos[i]]} /> )
+            }
+        } 
         
         return (
             <div className="table">
@@ -621,6 +673,10 @@ export default class EditDespesas extends Component {
 
                                 <button id="plus" onClick={this.showModalFornecedor}>+</button>
                                 {modalFornecedor}
+                            </div>
+
+                            <div className="actions">
+                                {$image}
                             </div>
 
                         </form>
