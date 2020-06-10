@@ -1,4 +1,15 @@
 import React, { Component } from 'react'
+import { uniqueId } from "lodash"
+import filesize from "filesize"
+
+import http from "../http-common"
+
+import GlobalStyle from "../styles/global"
+import { Container, Content } from "./styles"
+
+import Upload from "./Upload"
+import FileList from "./FileList"
+
 import ReceitaDataService from "../services/receita.service"
 import CategoriaDataService from "../services/categoria.service"
 import MembroDataService from '../services/membro.service'
@@ -44,6 +55,8 @@ export default class AdicionarReceber extends Component {
             currentIndex: -1,
             info:{},
             page: 1,
+            uploadedFiles: [],
+            arquivos: [],            
             selectedPage: null
         }
     }
@@ -51,6 +64,78 @@ export default class AdicionarReceber extends Component {
     componentDidMount() {
         this.pegaCategoria()        
     }
+
+    handleUpload = files => {
+        const uploadedFiles = files.map(file => ({
+          file,
+          id: uniqueId(),
+          name: file.name,
+          readableSize: filesize(file.size),
+          preview: URL.createObjectURL(file),
+          progress: 0,
+          uploaded: false,
+          error: false,
+          url: null
+        }))
+    
+        this.setState({
+          uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)          
+        })
+    
+        uploadedFiles.forEach(this.processUpload)
+      }
+
+      updateFile = (id, data) => {
+        this.setState({
+          uploadedFiles: this.state.uploadedFiles.map(uploadedFile => {
+            return id === uploadedFile.id ? { ...uploadedFile, ...data } : uploadedFile
+          })
+        })
+      }
+
+      processUpload = uploadedFile => {
+        const data = new FormData()
+    
+        data.append("file", uploadedFile.file, uploadedFile.name)
+    
+       
+        http                            
+          .post("/membros/files", data, {
+            onUploadProgress: e => {
+              const progress = parseInt(Math.round((e.loaded * 100) / e.total))
+    
+              this.updateFile(uploadedFile.id, {
+                progress
+              })
+            }
+          })
+          .then(response => {
+            this.updateFile(uploadedFile.id, {
+              uploaded: true,
+              id: response.data._id,
+              url: response.data.url,
+              foto: response.data.foto
+            })
+          })
+          .catch(() => {
+            this.updateFile(uploadedFile.id, {
+              error: true
+            })
+          })
+      }
+
+      handleDelete = async id => {
+        await http.delete(`/membros/files/${id}`)
+    
+        this.setState({
+          uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id)
+        })
+      }
+    
+      componentWillUnmount() {
+        this.state.uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview))
+      }
+
 
     estadoDescricao(e){
         const descricao = e.target.value
@@ -86,6 +171,15 @@ export default class AdicionarReceber extends Component {
         this.setState({
             categoria: categoria
         }) 
+
+        if (this.state.categoria !== 'Dízimo') {
+            this.setState(prevState => ({
+                currentMembro: {
+                    ...prevState.currentMembro,
+                    nome: ""
+                }
+            }))
+        }
     }
 
     estadoTipo(e){
@@ -170,6 +264,7 @@ export default class AdicionarReceber extends Component {
                     cat: response.data
                 })
             })
+            
             .catch(e => {
                 console.log(e)
             })
@@ -197,6 +292,9 @@ export default class AdicionarReceber extends Component {
     }
 
     salvarReceber(){
+
+        
+
         var data = {
             descricao: this.state.descricao,
             valor: this.state.valor,
@@ -206,7 +304,8 @@ export default class AdicionarReceber extends Component {
             formapagamento: this.state.formapagamento,
             categoria: this.state.categoria,
             parcelas: this.state.parcelas,
-            membro: this.state.currentMembro.nome
+            membro: this.state.currentMembro.nome,
+            arquivos: (this.state.uploadedFiles).map((item) => {return item.foto})
         }
 
         ReceitaDataService.cadastrar(data) 
@@ -222,6 +321,7 @@ export default class AdicionarReceber extends Component {
                     categoria: response.data.categoria,
                     membro: response.data.membro,
                     parcelas: response.data.parcelas,
+                    arquivos: response.data.arquivos,
                     status: response.data.status,
                     situacao: response.data.situacao,
                     submitted: true
@@ -274,7 +374,7 @@ export default class AdicionarReceber extends Component {
         
     render() {
 
-        const {buscaNome, membros, currentIndex, currentMembro, info, page} = this.state
+        const {buscaNome, membros, currentIndex, currentMembro, info, page, uploadedFiles} = this.state
 
          //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
          let pago = null
@@ -371,7 +471,7 @@ export default class AdicionarReceber extends Component {
         let filtro = (this.state.cat).filter((item) => {
              return item.tipo === 'receita'
          })
-         //MOstra as categorias já filtradas
+         //Mostra as categorias já filtradas
          let catreceitas = filtro.map((categoria, index) => (
             <option value={categoria.categoria} key={index}>{categoria.categoria}</option>
         ))
@@ -408,33 +508,30 @@ export default class AdicionarReceber extends Component {
                 </div>
             ))}
             </div>
-        }
-            
+        }                   
         
         let dizimo = null
         if (this.state.categoria === 'Dízimo') {
             dizimo = 
-            <div>
-                <div className="form-group">
-                    <label>Membro</label> 
+            <div>               
+                <label>Membro</label>                 
+                <div className="autocomplete">
+                    <input 
+                        type="text"
+                        className="autocomplete" 
+                        id="membro" 
+                        name="membro" 
+                        value={buscaNome} 
+                        onKeyUp={this.buscarNome} 
+                        onClick={this.buscarNome}
+                        onChange={this.estadoBuscaNome}
+                        autoComplete="off" />                    
                 </div>
-                <div className="actions">
-                    <div className="autocomplete">
-                        <input 
-                            type="text"
-                            className="autocomplete" 
-                            id="membro" 
-                            name="membro" 
-                            value={buscaNome} 
-                            onKeyUp={this.buscarNome} 
-                            onClick={this.buscarNome}
-                            onChange={this.estadoBuscaNome}
-                            autoComplete="off" /> 
-                    </div>
-                </div>
-                    {mostrar}                    
+                {mostrar}                    
             </div>
         }
+
+        
 
         return (
             <div className="list">
@@ -537,14 +634,26 @@ export default class AdicionarReceber extends Component {
                         </div>
 
                         <div className="form-group">
-                        {dizimo}
+                            {dizimo}
                         </div>
 
                         <ul className="pagination">
-                        { paginas }
+                            { paginas }
                         </ul>
 
+                        <Container>
+                        <Content>
+                            <Upload onUpload={this.handleUpload} />
+                            {!!uploadedFiles.length && (
+                                <FileList files={uploadedFiles} onDelete={this.handleDelete} />
+                            )}
+                        </Content>
+                        <GlobalStyle />
+                    </Container>
+
                     </div>
+
+                    
 
                     <div className="actions">                
                             <button onClick={this.salvarReceber}>

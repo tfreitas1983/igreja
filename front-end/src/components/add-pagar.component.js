@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
-import DespesaDataService from "../services/despesa.service"
-import FornecedorDataService from "../services/fornecedor.service"
-import CategoriaDataService from "../services/categoria.service"
-import MembroDataService from "../services/membro.service"
-import moment from 'moment'
 import { uniqueId } from "lodash"
 import filesize from "filesize"
+
 import http from "../http-common"
 
 import GlobalStyle from "../styles/global"
@@ -14,7 +10,11 @@ import { Container, Content } from "./styles"
 import Upload from "./Upload"
 import FileList from "./FileList"
 
-
+import DespesaDataService from "../services/despesa.service"
+import FornecedorDataService from "../services/fornecedor.service"
+import CategoriaDataService from "../services/categoria.service"
+import MembroDataService from "../services/membro.service"
+import moment from 'moment'
 
 export default class AdicionarPagar extends Component {
     constructor(props) {
@@ -69,8 +69,7 @@ export default class AdicionarPagar extends Component {
 
     componentDidMount() {
         this.pegaCategoria()
-        this.pegaFornecedor()
-        
+        this.pegaFornecedor()        
     }
 
     pegaArquivos() {

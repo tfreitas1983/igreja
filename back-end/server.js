@@ -18,6 +18,7 @@ db.mongoose
     .connect(db.url, {
         useNewUrlParser: true,
         useCreateIndex: true,
+        useFindAndModify: false,
         useUnifiedTopology: true
     })
     .then(() => {

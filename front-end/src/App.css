@@ -289,11 +289,7 @@ table, th, td {
 
 
 .submit-form {  
-  position: relative;
-  max-width: 300px;
-  justify-content: center;
   margin-top: 80px;
-  display: flex;
 }
 
 .edit-form {

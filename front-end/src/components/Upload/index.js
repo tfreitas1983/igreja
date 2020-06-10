@@ -14,17 +14,20 @@ export default class Upload extends Component {
       return <UploadMessage type="error">Arquivo não suportado</UploadMessage>;
     }
 
+    
     return <UploadMessage type="success">Solte os arquivos aqui</UploadMessage>;
+    
+    
   };
 
   render() {
     const { onUpload } = this.props;
 
     return (
-      <Dropzone accept="image/*" onDropAccepted={onUpload}>
+      <Dropzone accept="image/*,application/pdf,.doc,.docx" onDropAccepted={onUpload}>
         {({ getRootProps, getInputProps, isDragActive, isDragReject }) => (
           <DropContainer
-            {...getRootProps()}
+            {...getRootProps({onClick: evt => evt.preventDefault()})}
             isDragActive={isDragActive}
             isDragReject={isDragReject}
           >

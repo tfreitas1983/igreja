@@ -68,7 +68,7 @@ class App extends Component {
             </div>
           </nav>
 
-          <div className="container mt-6">
+          <div className="container mt-3">
             <Switch>
               <Route exact path={"/membros"} component={MembrosLista} />
               <Route exact path="/membros/adicionar" component={AdicionarMembro} />

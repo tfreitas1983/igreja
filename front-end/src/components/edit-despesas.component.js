@@ -5,16 +5,6 @@ import FornecedorDataService from "../services/fornecedor.service"
 import CategoriaDataService from "../services/categoria.service"
 import moment from 'moment'
 
-import { uniqueId } from "lodash";
-import filesize from "filesize";
-import http from "../http-common"
-
-import GlobalStyle from "../styles/global";
-import { Container, Content } from "./styles";
-
-import Upload from "./Upload";
-import FileList from "./FileList"
-
 export default class EditDespesas extends Component {
     constructor(props) {
         super(props)
@@ -109,7 +99,7 @@ export default class EditDespesas extends Component {
                     uploadedFiles: response.data.map(file => ({
                         id: file._id,
                         name: file.foto,
-                        readableSize: filesize(file.size),
+                        readableSize: file.size,
                         preview: file.foto, //Verificar depois sobre o URL
                         uploaded: true,
                         url: file.URL.createObjectURL(uploadedFiles) //Verificar depois URL.createObjectURL(imagem)
