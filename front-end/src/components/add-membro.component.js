@@ -288,7 +288,7 @@ export default class AdicionarMembro extends Component {
 
                         <div className="image-container">
 
-                            <div className="envio">
+                            <div className="imagem">
                                 {$imagePreview}
                             </div>
 

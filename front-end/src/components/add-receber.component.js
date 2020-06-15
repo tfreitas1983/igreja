@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import { uniqueId } from "lodash"
 import filesize from "filesize"
-
 import http from "../http-common"
-
 import GlobalStyle from "../styles/global"
 import { Container, Content } from "./styles"
-
 import Upload from "./Upload"
 import FileList from "./FileList"
 

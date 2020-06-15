@@ -33,8 +33,8 @@ class MembroDataService {
         return http.post("/membros/files", file)
     } 
 
-    buscarArquivo(id) {
-        return http.get(`/membros/files/${id}`)
+    buscarImagens() {
+        return http.get("/membros/files")
     }
 }
 

@@ -38,7 +38,11 @@ Próximas Etapas:
   - Listar receitas - FEITO 01/06/2020
   - Editar receita - FEITO 01/06/2020
 - Autocompletar na busca - FEITO 02/06/2020
-- Implementar o upload múltiplo de arquivos com drag n' drop - FEITO 09/06/2020
+- Implementar o upload múltiplo de arquivos com drag n' drop nas telas de contas a pagar e receber
+  - Adicionar despesa - FEITO 09/06/2020
+  - Adicionar receita - FEITO 09/06/2020
+  - Editar despesa
+  - Editar receita
 - Implementar relatório de receitas/despesas
 - Implementar os filtros nos relatórios
 - Salvar relatórios em PDF, CSV

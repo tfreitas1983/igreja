@@ -436,7 +436,7 @@ export default class Membro extends Component {
                     <form>
                         <div className="image-container">
 
-                            <div className="envio">
+                            <div className="imagem">
                                 {$imagePreview}
                             </div>
                             

@@ -1,4 +1,12 @@
 import React, { Component } from 'react'
+import { uniqueId, isEmpty } from "lodash"
+import filesize from "filesize"
+import http from "../http-common"
+import GlobalStyle from "../styles/global"
+import { Container, Content } from "./styles"
+import Upload from "./Upload"
+import FileList from "./FileList"
+
 import DespesaDataService from "../services/despesa.service"
 import MembroDataService from "../services/membro.service"
 import FornecedorDataService from "../services/fornecedor.service"
@@ -46,11 +54,12 @@ export default class EditDespesas extends Component {
                 categoria: "",
                 tipo: "despesa",
                 formapagamento: "",
-                parcelas: "",
+                parcelas: "",                
                 arquivos: [],
                 situacao: ""
             },
             uploadedFiles: [],
+            uploads: [],
             empresas: [],
             cat: [],
             showCategoria: false,
@@ -59,14 +68,16 @@ export default class EditDespesas extends Component {
     }
 
     componentDidMount() {
-        this.buscaDespesa(this.props.match.params.id) 
+        this.buscaDespesa(this.props.match.params.id)
+        this.pegaArquivos()  
         this.pegaCategoria()   
-        this.pegaFornecedor()
+        this.pegaFornecedor()        
+        
     }
 
     buscaDespesa (id) {
         DespesaDataService.buscarUm(id)
-            .then(response => {
+            .then(response => {                
                 this.setState({
                     current: {
                         id: response.data.id,
@@ -81,35 +92,108 @@ export default class EditDespesas extends Component {
                         fornecedor: response.data.fornecedor,
                         categoria: response.data.categoria,
                         parcelas: response.data.parcelas,
-                        arquivos: (response.data.arquivos).map((item) => {return item}),
+                        arquivos: response.data.arquivos,
                         situacao: response.data.situacao
                     }
-                })
+                })                  
             })            
             .catch(e => {
                 console.log(e)
             })  
     }
 
-    pegaArquivos() {
-        MembroDataService.buscarArquivo()
+    pegaArquivos() {       
+        MembroDataService.buscarImagens()
             .then(response => {
-                const uploadedFiles = response.data
+               // const uploads = response.data
                 this.setState({
-                    uploadedFiles: response.data.map(file => ({
-                        id: file._id,
-                        name: file.foto,
+                    uploads: response.data.map(file => ({
+                        id: file.id,
+                        name: file.original,
                         readableSize: file.size,
                         preview: file.foto, //Verificar depois sobre o URL
                         uploaded: true,
-                        url: file.URL.createObjectURL(uploadedFiles) //Verificar depois URL.createObjectURL(imagem)
-                    }))
-                })
-            })
+                        url: file.foto //Verificar depois URL.createObjectURL(imagem)
+                    })) 
+                })                  
+            })                  
             .catch(e => {
                 console.log(e)
             })
+    }   
+
+ 
+
+    handleUpload = files => {
+        const uploadedFiles = files.map(file => ({
+          file,
+          id: uniqueId(),
+          name: file.name,
+          readableSize: filesize(file.size),
+          preview: URL.createObjectURL(file),
+          progress: 0,
+          uploaded: false,
+          error: false,
+          url: null
+        }))
+    
+        this.setState({
+          uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)          
+        })
+    
+        uploadedFiles.forEach(this.processUpload)
+      }
+
+    updateFile = (id, data) => {
+    this.setState({
+        uploadedFiles: this.state.uploadedFiles.map(uploadedFile => {
+        return id === uploadedFile.id ? { ...uploadedFile, ...data } : uploadedFile
+        })
+    })
     }
+
+    processUpload = uploadedFile => {
+    const data = new FormData()
+
+    data.append("file", uploadedFile.file, uploadedFile.name)
+
+    
+    http                            
+        .post("/membros/files", data, {
+        onUploadProgress: e => {
+            const progress = parseInt(Math.round((e.loaded * 100) / e.total))
+
+            this.updateFile(uploadedFile.id, {
+            progress
+            })
+        }
+        })
+        .then(response => {
+        this.updateFile(uploadedFile.id, {
+            uploaded: true,
+            id: response.data.id,
+            url: response.data.url,
+            foto: response.data.foto
+        })
+        })
+        .catch(() => {
+        this.updateFile(uploadedFile.id, {
+            error: true
+        })
+        })
+    }
+
+    handleDelete = async id => {
+        await http.delete(`/membros/files/${id}`)
+
+        this.setState({
+            uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id)
+        })
+    }
+
+    componentWillUnmount() {
+        this.state.uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview))
+    } 
 
     estadoDescricao(e) {
         const descricao = e.target.value
@@ -262,6 +346,7 @@ export default class EditDespesas extends Component {
             .catch(e => {
                 console.log(e)
             })
+           
     }
 
     salvarCategoria() {
@@ -395,10 +480,10 @@ export default class EditDespesas extends Component {
 
     render(){
 
-        const {current, empresas} = this.state
-        
-        
-        
+        const {current, empresas, uploads, uploadedFiles} = this.state      
+
+
+
         //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
         let pago = null
         if(current.status === "Pago") {
@@ -548,24 +633,62 @@ export default class EditDespesas extends Component {
             return acc;
           }, {});
 
-        // Constante que pega todas as imagens da pasta images
+        // Constante que pega todos os arquivos da pasta images
         const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))
+        
+
+        //Verifica os nomes dos arquivos vinculados à despesa e busca os dados na collections files
+        let attached = []
+        let preview = []                       
+                    
+        current.arquivos.map((item)=> {
+            return (
+                preview.push( uploads.filter((upload) => { 
+                    return item === upload.preview 
+                })) 
+            )
+        })   
+        attached = preview.flat()
+            console.log(attached)
         
         //Modifica o <img src=""> no JSX com as imagens da pasta ligadas à despesa
         let $image = []
-        let i = 0
-        if (current.arquivos) {
-            for (i = 0; i <= current.arquivos.length; i++) {
-                $image.push ( <img alt="" key={i} src={images[current.arquivos[i]]} /> )
-            }
-        } 
+        
+
+        //Verifica a extensão do arquivo para mostrar o thumbnail adequado
+        if (attached && isEmpty(attached) === false) {
+            attached.map((item) => {
+                if (item.preview.split('.').pop() === 'pdf') {
+                    return (                    
+                        $image.push (
+                        <div id="preview"> <img alt="" key={item.id} src={images["pdf.png"]} /> <span>{item.name}</span> </div>)
+                        )
+                }
+                if (item.preview.split('.').pop() === 'doc' ||item.preview.split('.').pop() === 'docx') {
+                    return (                    
+                        $image.push (
+                        <div id="preview"> <img alt="" key={item.id} src={images["doc.png"]} /> <span>{item.name}</span> </div>)
+                    )
+                }else {
+                return (                    
+                    $image.push (
+                    <div id="preview"> <img alt="" key={item.id} src={images[item.preview]} /> <span>{item.name}</span> </div>)
+                    )
+                }
+            })
+        }
+        
+
+
         
         return (
             <div className="table">
                 { current ? (
-                    <div className="edit-form">
+                    <div className="submit-form">
                         <h2>Editar despesa #{current.numdesp}</h2>
                         <form>
+
+                           
                             <div className="form-group">
                                 <label htmlFor="descricao">Descrição</label>
                                 <input type="text" className="form-control" id="descricao" value={current.descricao} onChange={this.estadoDescricao} />
@@ -664,11 +787,23 @@ export default class EditDespesas extends Component {
                                 <button id="plus" onClick={this.showModalFornecedor}>+</button>
                                 {modalFornecedor}
                             </div>
-
-                            <div className="actions">
+                            
+                            <div className="preview" >
                                 {$image}
                             </div>
-
+                        
+                            <Container>
+                          
+                                <Content>
+                                   
+                                    <Upload onUpload={this.handleUpload} />
+                                    {!!uploadedFiles && (
+                                        <FileList files={uploadedFiles} key={uploadedFiles.id} onDelete={this.handleDelete} />
+                                    )}
+                                </Content>
+                                <GlobalStyle />
+                            
+                            </Container> 
                         </form>
                         {current.situacao ? (
                             <button className="badge badge-primary mr-2" onClick={() => this.atualizaSituacao(false)}>
