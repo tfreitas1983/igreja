@@ -37,7 +37,6 @@ export default class EditDespesas extends Component {
         this.atualizaSituacao = this.atualizaSituacao.bind(this)
         this.buscaDespesa = this.buscaDespesa.bind(this)
 
-
         this.state = {
             current:{                
                 descricao: "",
@@ -60,6 +59,7 @@ export default class EditDespesas extends Component {
             },
             uploadedFiles: [],
             uploads: [],
+            images: [],
             empresas: [],
             cat: [],
             showCategoria: false,
@@ -71,8 +71,25 @@ export default class EditDespesas extends Component {
         this.buscaDespesa(this.props.match.params.id)
         this.pegaArquivos()  
         this.pegaCategoria()   
-        this.pegaFornecedor()        
+        this.pegaFornecedor()                
+    }
+
+    importAll = (e) => {
         
+        //Monta um array com os nomes dos arquivos da pasta imagens
+        
+        const importAll = require =>
+          require.keys().reduce((acc, next) => {
+            acc[next.replace("./", "")] = require(next)
+            return acc
+          }, {})        
+         
+        // Constante que pega todos os arquivos da pasta images
+        const images = importAll(
+            require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))        
+            
+        this.setState({images: images})      
+         
     }
 
     buscaDespesa (id) {
@@ -83,7 +100,7 @@ export default class EditDespesas extends Component {
                         id: response.data.id,
                         numdesp: response.data.numdesp,
                         descricao: response.data.descricao,
-                        valor: response.data.valor,
+                        valor: (response.data.valor).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL',}),
                         vencimento: moment(response.data.vencimento).format('DD/MM/YYYY'),
                         status: response.data.status,
                         dtpagamento: moment(response.data.dtpagamento).format('DD/MM/YYYY'),
@@ -95,7 +112,8 @@ export default class EditDespesas extends Component {
                         arquivos: response.data.arquivos,
                         situacao: response.data.situacao
                     }
-                })                  
+                }) 
+                this.importAll()      
             })            
             .catch(e => {
                 console.log(e)
@@ -115,8 +133,8 @@ export default class EditDespesas extends Component {
                         uploaded: true,
                         url: file.foto //Verificar depois URL.createObjectURL(imagem)
                     })) 
-                })                  
-            })                  
+                })                 
+            })                          
             .catch(e => {
                 console.log(e)
             })
@@ -148,7 +166,7 @@ export default class EditDespesas extends Component {
     this.setState({
         uploadedFiles: this.state.uploadedFiles.map(uploadedFile => {
         return id === uploadedFile.id ? { ...uploadedFile, ...data } : uploadedFile
-        })
+        })    
     })
     }
 
@@ -409,7 +427,8 @@ export default class EditDespesas extends Component {
             formapagamento: this.state.current.formapagamento,
             fornecedor: this.state.current.razao,
             categoria: this.state.current.categoria,
-            parcelas: this.state.current.parcelas            
+            parcelas: this.state.current.parcelas,
+            arquivos: this.state.current.arquivos.concat(this.state.uploadedFiles.map((item) => {return item.foto}))
         }
 
         DespesaDataService.editar(this.state.current.id, data)
@@ -439,6 +458,7 @@ export default class EditDespesas extends Component {
             fornecedor: this.state.current.razao,
             categoria: this.state.current.categoria,
             parcelas: this.state.current.parcelas,
+            arquivos: this.state.current.arquivos.concat(this.state.uploadedFiles.map((item) => {return item.foto})),
             situacao: estado            
         }
 
@@ -478,11 +498,12 @@ export default class EditDespesas extends Component {
 
     
 
+    
+
     render(){
 
-        const {current, empresas, uploads, uploadedFiles} = this.state      
-
-
+        const {current, empresas, images, uploads, uploadedFiles} = this.state  
+        
 
         //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
         let pago = null
@@ -625,18 +646,7 @@ export default class EditDespesas extends Component {
                     </div>
                 </div>
         } 
-
-        //Monta um array com os nomes dos arquivos da pasta imagens
-        const importAll = require =>
-          require.keys().reduce((acc, next) => {
-            acc[next.replace("./", "")] = require(next);
-            return acc;
-          }, {});
-
-        // Constante que pega todos os arquivos da pasta images
-        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))
         
-
         //Verifica os nomes dos arquivos vinculados à despesa e busca os dados na collections files
         let attached = []
         let preview = []                       
@@ -648,11 +658,10 @@ export default class EditDespesas extends Component {
                 })) 
             )
         })   
-        attached = preview.flat()
-            console.log(attached)
-        
+        attached = preview.flat()      
+                
         //Modifica o <img src=""> no JSX com as imagens da pasta ligadas à despesa
-        let $image = []
+        let $image = []       
         
 
         //Verifica a extensão do arquivo para mostrar o thumbnail adequado
@@ -661,18 +670,19 @@ export default class EditDespesas extends Component {
                 if (item.preview.split('.').pop() === 'pdf') {
                     return (                    
                         $image.push (
-                        <div id="preview"> <img alt="" key={item.id} src={images["pdf.png"]} /> <span>{item.name}</span> </div>)
-                        )
+                        <div key={item.id}> <img alt="" key={item.id} src={images["pdf.png"]} /> <span>{item.name}</span> </div>)
+                    )
                 }
                 if (item.preview.split('.').pop() === 'doc' ||item.preview.split('.').pop() === 'docx') {
                     return (                    
                         $image.push (
-                        <div id="preview"> <img alt="" key={item.id} src={images["doc.png"]} /> <span>{item.name}</span> </div>)
+                        <div key={item.id}> <img alt="" key={item.id} src={images["doc.png"]} /> <span>{item.name}</span> </div>)
                     )
-                }else {
-                return (                    
-                    $image.push (
-                    <div id="preview"> <img alt="" key={item.id} src={images[item.preview]} /> <span>{item.name}</span> </div>)
+                } 
+                else {
+                    return (                    
+                        $image.push (
+                        <div key={item.id}> <img alt="" key={item.id} src={images[item.preview]} /> <span>{item.name}</span> </div>)
                     )
                 }
             })
@@ -696,7 +706,7 @@ export default class EditDespesas extends Component {
 
                             <div className="form-group">
                                 <label htmlFor="valor">Valor</label>
-                                <input type="text" className="form-control" id="valor" value={current.valor.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL',})} onChange={this.estadoValor} />
+                                <input type="text" className="form-control" id="valor" value={current.valor} onChange={this.estadoValor} />
                             </div>
 
                             <div className="form-group">
@@ -792,10 +802,8 @@ export default class EditDespesas extends Component {
                                 {$image}
                             </div>
                         
-                            <Container>
-                          
-                                <Content>
-                                   
+                            <Container>                          
+                                <Content>                                   
                                     <Upload onUpload={this.handleUpload} />
                                     {!!uploadedFiles && (
                                         <FileList files={uploadedFiles} key={uploadedFiles.id} onDelete={this.handleDelete} />
