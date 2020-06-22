@@ -1,15 +1,17 @@
-import multer from 'multer'
-import crypto from 'crypto'
-import { extname, resolve } from 'path'
+const multer = require ('multer')
+const crypto = require ('crypto')
+const path = require ('path')
 
 export default {
     storage: multer.diskStorage({
-        destination: resolve('..', 'front-end', 'src', 'images'),
+        destination: (req, file, cb) => {
+            cb(null, path.resolve(__dirname, '..', '..', 'front-end', 'src', 'images'));
+          }, 
         filename: (req, file, cb) => {
             crypto.randomBytes (16, (err, res) => {
                 if (err) return cb(err)
 
-                return cb (null, res.toString('hex') + extname(file.originalname))
+                return cb (null, res.toString('hex')+ '.' + file.originalname.split('.').pop())
             })
         },
     }),
@@ -18,7 +20,7 @@ export default {
         const allowMimes = [
             'image/pjeg',
             'image/jpeg',
-            'image/jpg',
+            'image/jpg',            
             'image/png',
             'image/tiff',
             'image/gif',

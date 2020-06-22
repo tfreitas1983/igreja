@@ -12,6 +12,7 @@ import MembroDataService from "../services/membro.service"
 import FornecedorDataService from "../services/fornecedor.service"
 import CategoriaDataService from "../services/categoria.service"
 import moment from 'moment'
+import fileSize from 'filesize'
 
 export default class EditDespesas extends Component {
     constructor(props) {
@@ -58,8 +59,7 @@ export default class EditDespesas extends Component {
                 situacao: ""
             },
             uploadedFiles: [],
-            uploads: [],
-            images: [],
+            uploads: [],           
             empresas: [],
             cat: [],
             showCategoria: false,
@@ -71,27 +71,9 @@ export default class EditDespesas extends Component {
         this.buscaDespesa(this.props.match.params.id)
         this.pegaArquivos()  
         this.pegaCategoria()   
-        this.pegaFornecedor()                
+        this.pegaFornecedor()         
     }
-
-    importAll = (e) => {
-        
-        //Monta um array com os nomes dos arquivos da pasta imagens
-        
-        const importAll = require =>
-          require.keys().reduce((acc, next) => {
-            acc[next.replace("./", "")] = require(next)
-            return acc
-          }, {})        
-         
-        // Constante que pega todos os arquivos da pasta images
-        const images = importAll(
-            require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))        
-            
-        this.setState({images: images})      
-         
-    }
-
+   
     buscaDespesa (id) {
         DespesaDataService.buscarUm(id)
             .then(response => {                
@@ -113,7 +95,6 @@ export default class EditDespesas extends Component {
                         situacao: response.data.situacao
                     }
                 }) 
-                this.importAll()      
             })            
             .catch(e => {
                 console.log(e)
@@ -123,24 +104,21 @@ export default class EditDespesas extends Component {
     pegaArquivos() {       
         MembroDataService.buscarImagens()
             .then(response => {
-               // const uploads = response.data
                 this.setState({
-                    uploads: response.data.map(file => ({
+                    uploadedFiles: response.data.map(file => ({
                         id: file.id,
                         name: file.original,
                         readableSize: file.size,
-                        preview: file.foto, //Verificar depois sobre o URL
+                        preview: file.url, 
                         uploaded: true,
-                        url: file.foto //Verificar depois URL.createObjectURL(imagem)
+                        url: file.url
                     })) 
-                })                 
+                })                                  
             })                          
             .catch(e => {
                 console.log(e)
             })
     }   
-
- 
 
     handleUpload = files => {
         const uploadedFiles = files.map(file => ({
@@ -152,13 +130,13 @@ export default class EditDespesas extends Component {
           progress: 0,
           uploaded: false,
           error: false,
-          url: null
+          url: file.url
         }))
     
         this.setState({
           uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)          
         })
-    
+        
         uploadedFiles.forEach(this.processUpload)
       }
 
@@ -202,7 +180,7 @@ export default class EditDespesas extends Component {
     }
 
     handleDelete = async id => {
-        await http.delete(`/membros/files/${id}`)
+        await http.delete(`/files/${id}`)
 
         this.setState({
             uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id)
@@ -210,7 +188,7 @@ export default class EditDespesas extends Component {
     }
 
     componentWillUnmount() {
-        this.state.uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview))
+        this.state.uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview))        
     } 
 
     estadoDescricao(e) {
@@ -480,7 +458,7 @@ export default class EditDespesas extends Component {
 
     showModalCategoria = (e) => {
         e.preventDefault()
-        this.setState({ showCategoria: true })
+        this.setState({ showCategoria: true })        
     }
     
     hideModalCategoria = () => {
@@ -496,13 +474,10 @@ export default class EditDespesas extends Component {
         this.setState({ showFornecedor: false })
     }
 
-    
-
-    
 
     render(){
 
-        const {current, empresas, images, uploads, uploadedFiles} = this.state  
+        const {current, empresas, uploads, uploadedFiles} = this.state  
         
 
         //Verifica se o status é "Pago" e reinderiza o campo de data de pagamento
@@ -646,59 +621,69 @@ export default class EditDespesas extends Component {
                     </div>
                 </div>
         } 
-        
+               
+                
+        //Modifica o <img src=""> no JSX com as imagens da pasta ligadas à despesa
+        let $image = [] 
+
         //Verifica os nomes dos arquivos vinculados à despesa e busca os dados na collections files
-        let attached = []
-        let preview = []                       
-                    
-        current.arquivos.map((item)=> {
+       // let attached = []
+        //let preview = []                       
+        //Vincula os novos uploads à despesa 
+        /* this.state.current.arquivos.map((item)=> {
             return (
-                preview.push( uploads.filter((upload) => { 
+                preview.push( this.state.uploads.filter((upload) => { 
                     return item === upload.preview 
                 })) 
             )
         })   
-        attached = preview.flat()      
-                
-        //Modifica o <img src=""> no JSX com as imagens da pasta ligadas à despesa
-        let $image = []       
-        
+        attached = preview.flat() 
+        */
+       
+        const attached = uploads.filter(function(item) {
+            return (          
+                current.arquivos.indexOf(item.preview) !== -1)
+            })         
+        //console.log(attached)
+
+             const baseUrl = '../images/'
 
         //Verifica a extensão do arquivo para mostrar o thumbnail adequado
-        if (attached && isEmpty(attached) === false) {
+        if (attached && isEmpty(attached) === false) {            
             attached.map((item) => {
                 if (item.preview.split('.').pop() === 'pdf') {
                     return (                    
                         $image.push (
-                        <div key={item.id}> <img alt="" key={item.id} src={images["pdf.png"]} /> <span>{item.name}</span> </div>)
+                        <div key={item.id}> <img alt="" key={item.id} src={'../images/pdf.png'} /> <span>{item.name}</span> </div>)
                     )
                 }
                 if (item.preview.split('.').pop() === 'doc' ||item.preview.split('.').pop() === 'docx') {
                     return (                    
                         $image.push (
-                        <div key={item.id}> <img alt="" key={item.id} src={images["doc.png"]} /> <span>{item.name}</span> </div>)
+                        <div key={item.id}> <img alt="" key={item.id} src={'../images/doc.png'} /> <span>{item.name}</span> </div>)
                     )
                 } 
                 else {
                     return (                    
                         $image.push (
-                        <div key={item.id}> <img alt="" key={item.id} src={images[item.preview]} /> <span>{item.name}</span> </div>)
+                        <div key={item.id}> 
+                            <img alt="" key={item.id} src={`../../membros/files/${item.preview}`} /> 
+                            <span>{item.name}</span> 
+                        </div>)
                     )
-                }
+                } 
             })
-        }
+        }  
         
 
 
         
         return (
-            <div className="table">
+            <div className="submit-form">
                 { current ? (
-                    <div className="submit-form">
+                    <div className="form-group">
                         <h2>Editar despesa #{current.numdesp}</h2>
-                        <form>
-
-                           
+                        <form>                           
                             <div className="form-group">
                                 <label htmlFor="descricao">Descrição</label>
                                 <input type="text" className="form-control" id="descricao" value={current.descricao} onChange={this.estadoDescricao} />
@@ -797,11 +782,11 @@ export default class EditDespesas extends Component {
                                 <button id="plus" onClick={this.showModalFornecedor}>+</button>
                                 {modalFornecedor}
                             </div>
-                            
-                            <div className="preview" >
+                          
+                            <div className="preview">
                                 {$image}
-                            </div>
-                        
+                            </div> 
+                           
                             <Container>                          
                                 <Content>                                   
                                     <Upload onUpload={this.handleUpload} />

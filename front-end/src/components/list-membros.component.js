@@ -256,7 +256,7 @@ export default class MembrosLista extends Component {
                 <div className="col-md-6">
                     {currentMembro ? (
                     
-                        <div>
+                        <div className="imagem">
                             <img 
                                 src={images[currentMembro.foto]}
                                 className="imagem"

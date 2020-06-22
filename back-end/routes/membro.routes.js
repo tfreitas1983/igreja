@@ -9,24 +9,23 @@ module.exports = app => {
     import { Router } from 'express'
     import multer from 'multer'
     import multerConfig  from '../config/multer'
-    const multerFile = require ('../config/multerfile')
     
     var router =  new Router()
     const upload = multer(multerConfig)
-    const uploadFile = multer(multerFile)
+
 
     router.post("/membros", membros.cadastrar)
     router.get("/membros", membros.buscarTodos)
-    router.get("/templo", templo.buscarTodos)
+    router.get("/templo", templo.buscarTodos)    
     router.get("/templo/:id", templo.buscar)
     router.put("/templo/:id", templo.editar)
     router.get("/membros/files", membros.buscarImagens)
+    router.get("/membros/files/:id", membros.buscarImagem)
     router.get("/membros/:id", membros.buscarUm)
     router.put("/membros/:id", membros.editar)
     router.delete("/membros/:id", membros.apagar)
     router.delete("/membros", membros.apagarTodos)
-    router.post("/membros/files", upload.single('file'), membros.cadastrarImagem)        
-    router.get("/membros/files/:id", membros.buscarImagem)
+    router.post("/membros/files", upload.single('file'), membros.cadastrarImagem)      
     router.post("/templo", templo.cadastrar)
     router.post("/financeiro/despesas", despesas.cadastrar)
     router.get("/financeiro/despesas", despesas.buscarTodos)

@@ -181,7 +181,7 @@ exports.buscarImagens = (req, res) => {
 
 
 exports.cadastrarImagem = (req, res) => {
-    const { originalname: original, filename: foto, size } = req.file
+    const { originalname: original, filename: foto, size, location: url = "" } = req.file
     if (!foto) {
         res.status(400).send({ message: "A imagem deve ser enviada"})
         return
@@ -190,7 +190,8 @@ exports.cadastrarImagem = (req, res) => {
     const file = new Files ({
        original,
        foto,
-       size
+       size, 
+       url
     })
     file    
         .save(file)

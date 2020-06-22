@@ -166,9 +166,6 @@ Link:hover {
   display: block;
 }
 
-form{
-  margin-top: 80px;
-}
 
 .imagem img {
   border-radius: 50%;
@@ -240,14 +237,14 @@ form{
 }
 
 #plus {
-  padding: 0px 11px 34px 11px;
+  padding: 0px 10px 0px 10px;
   border-radius: 50%;
   margin-left: 10px;
   border: 0;
   background: #257575;
   color: #FFF;
   height: 30px;
-  font-size: 19px;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -289,7 +286,7 @@ table, th, td {
 
 .preview{
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
   margin-top: 10px;
   
@@ -298,13 +295,13 @@ table, th, td {
 .preview img {
   width: 50px;
   height: 50px;
-  border-radius: 5px;
-  background-position: 50% 50%;
+  border-radius: 5px;  
   margin-right: 10px;  
 }
 
 .submit-form {  
-  margin-top: 80px;
+  max-width: 600px;
+  margin: 10% 15% 0% 15%;
 }
 
 .edit-form {

@@ -1,5 +1,7 @@
 const express = require ('express')
 const path = require ('path')
+const fs = require("fs")
+const { promisify } = require("util")
 const bodyParser = require ('body-parser')
 const cors = require ('cors')
 
@@ -29,12 +31,14 @@ db.mongoose
         process.exit()
     })
 
-app.get("/", (req, res) => {
+
+    app.use("/files", express.static(path.resolve(__dirname, '..', 'front-end', 'src', 'images')))
+
+    app.get("/", (req, res) => {
     res.json({ message: "Hello World"})
 })
 
-app.get("/files", express.static(path.resolve('..', 'front-end', 'src', 'images')))
-app.get("/uploads", express.static(path.resolve('..', 'front-end', 'src', 'uploads')))
+
 
 require("./routes/membro.routes")(app)
 

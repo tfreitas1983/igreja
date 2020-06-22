@@ -2,7 +2,7 @@ const db = require("../models")
 const Files = db.files
 
 exports.cadastrar = (req, res) => {
-    const { originalname: original, filename: foto, size } = req.file
+    const { originalname: original, filename: foto, size, location: url = "" } = req.file
     if (!foto) {
         res.status(400).send({ message: "O arquivo deve ser enviada"})
         return
@@ -11,7 +11,8 @@ exports.cadastrar = (req, res) => {
     const file = new Files ({
        original,
        foto,
-       size
+       size,
+       url
     })
     file    
         .save(file)
